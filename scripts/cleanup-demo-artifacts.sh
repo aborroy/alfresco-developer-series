@@ -5,30 +5,42 @@
 # Works on macOS (BSD find) and Linux (GNU find).
 #
 # Usage:
-#   ./cleanup-demo-artifacts.sh            # interactive confirm
-#   ./cleanup-demo-artifacts.sh -n         # dry-run (show what would be removed)
-#   ./cleanup-demo-artifacts.sh -y         # no prompt (non-interactive)
-#   ./cleanup-demo-artifacts.sh --with-docker  # also remove docker modules, run scripts, README
+#   ./cleanup-demo-artifacts.sh                     # clean current dir
+#   ./cleanup-demo-artifacts.sh <folder>            # clean specific folder
+#   ./cleanup-demo-artifacts.sh -n <folder>         # dry-run (show what would be removed)
+#   ./cleanup-demo-artifacts.sh -y <folder>         # no prompt (non-interactive)
+#   ./cleanup-demo-artifacts.sh --with-docker <folder>  # also remove docker modules, run scripts, README
 #
 set -euo pipefail
 
 DRY_RUN=0
 ASSUME_YES=0
 WITH_DOCKER=0
+TARGET_DIR="."   # default
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -n) DRY_RUN=1 ;;
     -y) ASSUME_YES=1 ;;
     --with-docker) WITH_DOCKER=1 ;;
-    *) echo "Usage: $0 [-n] [-y] [--with-docker]"; exit 2 ;;
+    -*)
+      echo "Usage: $0 [-n] [-y] [--with-docker] [target-folder]"
+      exit 2
+      ;;
+    *)
+      # First non-flag arg is the target dir
+      TARGET_DIR="$1"
+      ;;
   esac
   shift
 done
 
-# Guardrail: ensure we're at the repo root (pom.xml present).
-if [[ ! -f "pom.xml" ]]; then
-  echo "✖ This doesn't look like the project root (missing pom.xml)."
+# Normalize path (remove trailing /, resolve relative)
+TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
+
+# Guardrail: ensure we're at a repo root (pom.xml present).
+if [[ ! -f "$TARGET_DIR/pom.xml" ]]; then
+  echo "✖ This doesn't look like the project root (missing pom.xml) in $TARGET_DIR"
   exit 1
 fi
 
@@ -86,7 +98,6 @@ process_items() {
   local items="$1"
   IFS=$'\n'
   for raw in $items; do
-    # strip inline comments and whitespace
     local line="${raw%%#*}"
     line="$(printf '%s' "$line" | awk '{$1=$1;print}')"
     [[ -z "$line" ]] && continue
@@ -96,14 +107,14 @@ process_items() {
 
     while IFS= read -r -d '' f; do
       TO_REMOVE+=("$f")
-    done < <(find . -type f -name "$name" -path "$pathfrag" -print0 2>/dev/null || true)
+    done < <(find "$TARGET_DIR" -type f -name "$name" -path "$pathfrag" -print0 2>/dev/null || true)
   done
 }
 
 process_items "$ITEMS"
 
 strip_docker_modules_from_pom() {
-  local pom="pom.xml"
+  local pom="$TARGET_DIR/pom.xml"
   [[ -f "$pom" ]] || { echo "pom.xml not found"; return 1; }
 
   awk '
@@ -118,12 +129,12 @@ strip_docker_modules_from_pom() {
 }
 
 if (( WITH_DOCKER )); then
-  for f in "./run.sh" "./run.bat" "./README.md"; do
+  for f in "$TARGET_DIR/run.sh" "$TARGET_DIR/run.bat" "$TARGET_DIR/README.md"; do
     [[ -f "$f" ]] && TO_REMOVE+=("$f")
   done
   while IFS= read -r -d '' d; do
     TO_REMOVE+=("$d")
-  done < <(find . -maxdepth 1 -type d \( -name "docker" -o -name "*-platform-docker" -o -name "*-share-docker" \) -print0 2>/dev/null || true)
+  done < <(find "$TARGET_DIR" -maxdepth 1 -type d \( -name "docker" -o -name "*-platform-docker" -o -name "*-share-docker" \) -print0 2>/dev/null || true)
   strip_docker_modules_from_pom
 fi
 
