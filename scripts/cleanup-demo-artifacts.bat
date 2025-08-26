@@ -19,11 +19,6 @@ if "%~1"=="" goto after_args
 if /I "%~1"=="-n"            set "DRY_RUN=1" & shift & goto parse_args
 if /I "%~1"=="-y"            set "ASSUME_YES=1" & shift & goto parse_args
 if /I "%~1"=="--with-docker" set "WITH_DOCKER=1" & shift & goto parse_args
-echo("%~1" | findstr /b "-" >nul
-if not errorlevel 1 (
-  echo Usage: %~nx0 [-n] [-y] [--with-docker] [target-folder]
-  exit /b 2
-)
 set "TARGET_DIR=%~1"
 shift
 goto parse_args
