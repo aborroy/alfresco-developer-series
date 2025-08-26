@@ -3,25 +3,33 @@ setlocal EnableExtensions EnableDelayedExpansion
 
 rem cleanup-demo-artifacts.cmd  (Windows CMD)
 rem Usage:
-rem   cleanup-demo-artifacts.cmd            (interactive)
-rem   cleanup-demo-artifacts.cmd -n         (dry run)
-rem   cleanup-demo-artifacts.cmd -y         (no prompt)
-rem   cleanup-demo-artifacts.cmd --with-docker
+rem   cleanup-demo-artifacts.cmd <folder>                (interactive)
+rem   cleanup-demo-artifacts.cmd -n <folder>             (dry run)
+rem   cleanup-demo-artifacts.cmd -y <folder>             (no prompt)
+rem   cleanup-demo-artifacts.cmd --with-docker <folder>
 
 set "DRY_RUN=0"
 set "ASSUME_YES=0"
 set "WITH_DOCKER=0"
+set "TARGET_DIR=."
 
 :parse_args
 if "%~1"=="" goto after_args
+
 if /I "%~1"=="-n"            set "DRY_RUN=1" & shift & goto parse_args
 if /I "%~1"=="-y"            set "ASSUME_YES=1" & shift & goto parse_args
 if /I "%~1"=="--with-docker" set "WITH_DOCKER=1" & shift & goto parse_args
-echo Usage: %~nx0 [-n] [-y] [--with-docker]
-exit /b 2
+echo("%~1" | findstr /b "-" >nul
+if not errorlevel 1 (
+  echo Usage: %~nx0 [-n] [-y] [--with-docker] [target-folder]
+  exit /b 2
+)
+set "TARGET_DIR=%~1"
+shift
+goto parse_args
 :after_args
 
-if not exist "pom.xml" (
+if not exist "%TARGET_DIR%\pom.xml" (
   echo ^(x^) This doesn't look like the project root ^(missing pom.xml^).
   exit /b 1
 )
@@ -82,27 +90,30 @@ set "PATTERNS=%TEMP%\patterns.txt"
 
 rem Build removal list (match by filename; filter later if you want)
 for /f "usebackq tokens=1,2 delims=," %%A in ("%PATTERNS%") do (
-  for /r %%F in (%%A) do (
-    call :ADD_UNIQUE "%%~fF"
-  )
   set "NAME=%%A"
   set "PATTERN=%%B"
+  for /R "%TARGET_DIR%" %%F in (%%A) do (
+    call :ADD_UNIQUE "%%~fF"
+  )
   echo Processing file !NAME! in path !PATTERN!
-  
-  
 )
+
  
 rem Optional: add docker items and strip pom.xml modules
 if "%WITH_DOCKER%"=="1" (
-  if exist "%cd%\run.sh"    call :ADD_UNIQUE "%cd%\run.sh"
-  if exist "%cd%\run.bat"   call :ADD_UNIQUE "%cd%\run.bat"
-  if exist "%cd%\README.md" call :ADD_UNIQUE "%cd%\README.md"
-
-  if exist "%cd%\docker" call :ADD_UNIQUE "%cd%\docker"
-
-  for /d %%D in ("*-platform-docker") do if exist "%%~fD" call :ADD_UNIQUE "%%~fD"
-  for /d %%D in ("*-share-docker")   do if exist "%%~fD" call :ADD_UNIQUE "%%~fD"
+  if exist "%TARGET_DIR%\run.sh"    call :ADD_UNIQUE "%TARGET_DIR%\run.sh"
+  if exist "%TARGET_DIR%\run.bat"   call :ADD_UNIQUE "%TARGET_DIR%\run.bat"
+  if exist "%TARGET_DIR%\README.md" call :ADD_UNIQUE "%TARGET_DIR%\README.md"
+  if exist "%TARGET_DIR%\docker" call :ADD_UNIQUE "%TARGET_DIR%\docker"
+  rem search ONLY immediate subfolders under TARGET_DIR (no recursion)
+  for /d %%D in ("%TARGET_DIR%\*-platform-docker") do (
+    if exist "%%~fD" call :ADD_UNIQUE "%%~fD"
+  )
+  for /d %%D in ("%TARGET_DIR%\*-share-docker") do (
+    if exist "%%~fD" call :ADD_UNIQUE "%%~fD"
+  )
 )
+
 
 call :PRINT_LIST
 if "%DRY_RUN%"=="1" (
@@ -197,7 +208,7 @@ echo ------------------------------------------------------------
 exit /b
 
 :STRIP_DOCKER_MODULES_IN_POM
-if not exist "pom.xml" exit /b
+if not exist "$TARGET_DIR\pom.xml" exit /b
 set "POMTMP=%TMPDIR%\pom_filtered.tmp"
 findstr /v /r /c:"<module>[ ]*docker[ ]*</module>" ^
               /c:"<module>[ ]*.*-platform-docker[ ]*</module>" ^
