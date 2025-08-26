@@ -71,7 +71,7 @@ to write code that runs within either of those web applications, the Alfresco
 Maven SDK is where you need to start.
 
 A quick word about versions. This tutorial assumes you are using Alfresco Maven
-SDK 4.2 which works with Alfresco 7.0. If you are using a version of Alfresco
+SDK 4.12 which works with Alfresco 25.1. If you are using a version of Alfresco
 older than 7.0 but greater than or equal to 6.2, you can use version 4.1 of the
 SDK. If you are using a version of Alfresco older than 6.2 but greater than or
 equal to 6.0.1, you can use version 4.0 of the SDK. If you are using a version
@@ -95,11 +95,11 @@ using the Alfresco Maven SDK. Before I start I'm going to assume you have the
 following installed:
 
 * MacOS 11.4
-* Java OpenJDK 11.0.2
-* Apache Maven 3.8.1
-* Alfresco Maven SDK 4.2 (No download necessary)
-* Docker 20.10.6
-* Docker Compose 1.29.1
+* Java OpenJDK 24.0.2
+* Apache Maven 3.9.9
+* Alfresco Maven SDK 4.12 (No download necessary)
+* Docker 28.3.0
+* Docker Compose 2.38.1
 
 You don't need to download anything else. Seriously. Not even Alfresco.
 
@@ -137,7 +137,7 @@ several available:
     (2 in this example) and hit enter.
 
 4. If Maven asks you to specify the version of the archetype you want, choose
-4.2.
+4.12.
 
 5. Maven now asks for a groupId. You should be thinking "Java package". My
 examples always assume I am working at a fictitious company called SomeCo,
@@ -184,7 +184,7 @@ Try this:
 
     cd maven-sdk-tutorial
     ./run.sh build_start
-
+    
 If you get a permissions error, run `chmod u+x ./run.sh` and try again. If you
 are on Windows, use run.bat instead.
 
@@ -205,6 +205,7 @@ Alfresco server.
 Once you see:
 
     INFO: Starting ProtocolHandler ["http-bio-8080"]
+    INFO: Server startup in [XXXXX] milliseconds
 
 You should be able to go to:
 
@@ -363,25 +364,20 @@ IntelliJ users can just open or import the project and go.
 Another popular choice is Eclipse. It has Maven support, but it may be less
 obvious how to work with your Alfresco project, so let's see how that works.
 
-I'll be using the Neon version of Eclipse Java EE IDE for Web Developers.
+I'll be using the IntelliJ IDEA.
 
-To open the project we created earlier in Eclipse, do this:
+To open the project we created earlier in IntelliJ, do this:
 
-1. Select File, Import, Maven, Existing Maven Projects. Click Next.
+1. Select File, Open, and navigate to the folder $tutorial (maven-sdk-tutorial or project name). Click Next.
 
-    ![](./images/import-maven-project.png)
+    ![](./images/import-intellij.png)
 
-2. Specify the directory that contains the maven-sdk-tutorial folder. Eclipse
-will inspect that folder and show your project in the projects list. Make sure
-the checkbox next to the project name is checked, then click Next.
+2. Specify the directory that contains the maven-sdk-tutorial folder. 
+3. It might ask you to trust the window depending on your setting.
+ ![](./images/trust-this-window.png)
 
-    ![](./images/select-maven-project.png)
+After clicking Trust Window, the project is imported into your IntelliJ workspace.
 
-After clicking Finish, the project is imported into your Eclipse workspace.
-
-Note: In Eclipse you may see Maven lifecycle related errors after importing a
-project based on the Alfresco Maven SDK. You can modify your pom.xml to resolve
-these errors or they can be ignored. IntelliJ should have no problem.
 
 Understanding the Project Structure
 -----------------------------------
@@ -410,8 +406,8 @@ Inside the project directory, you'll see:
 * *pom.xml* In the root of the project directory you'll see pom.xml. This tells
 Maven everything it needs to know about your project. Remember those settings
 you specified when you created the project from the archetype? You can make
-changes to those settings here. For example, version 4.2 of the archetype
-assumes you are working with Alfresco Community Edition 7.0.0. If you wanted to
+changes to those settings here. For example, version 4.12 of the archetype
+assumes you are working with Alfresco Community Edition 25.1.0. If you wanted to
 work with a different version, you would simply change those properties and then
 tell Maven to update and it will take care of the rest. Check the Alfresco docs
 to make sure the version of Alfresco you are trying to use is compatible with
@@ -485,50 +481,6 @@ Even when developing both a repository tier AMP and a Share tier AMP, some
 developers like having two independent projects that can be versioned
 independently.
 
-Creating Projects from Within Eclipse
-=====================================
-In the previous section, you created a new Alfresco project from the command
-line using the all-in-one archetype. Rather than use the command line, another
-option is to configure Eclipse so you can create new Alfresco projects using the
-Alfresco Maven SDK without leaving the IDE.
-
-Let's create a new project. But this time, we'll do it from Eclipse instead of
-the command line, and we'll use the Share archetype instead of all-in-one.
-
-1. File, New Maven Project.
-2. Specify $TUTORIAL_HOME, then click next.
-
-    ![](./images/new-maven-project.png)
-
-3. Click Configure so we can add Alfresco's catalog to the list.
-
-    ![](./images/select-an-archetype.png)
-
-4. Click Add Remote Catalog
-5. Specify "https://nexus.alfresco.com/nexus/content/groups/public/archetype-catalog.xml"
-as the Catalog File. Specify "Alfresco Archetypes" as the description. Then,
-click OK and OK again to close the Preferences panel.
-
-    ![](./images/add-archetype-catalog.png)
-
-6. Now select "Alfresco Archetypes" in the catalog and you'll see a bunch of
-archetypes show up in the list.
-7. Specify "org.alfresco.maven.archetype" in the filter and you'll see the same
-archetypes that were presented to you as options on the command line at the
-start of the tutorial.
-8. Select the alfresco-share-jar-archetype and click Next.
-
-    ![](./images/select-amp-archetype.png)
-
-9. Specify "com.someco" for the groupId and "maven-sdk-tutorial-share" as the
-artifactId, then click Finish.
-
-    ![](./images/specify-archetype-params.png)
-
-Now your new customization project is in your workspace. The next time you
-create a project using the archetype, it will be a few less steps because you
-won't have to add the catalog.
-
 Other Topics to Explore on Your Own
 ===================================
 You now know how to use the Alfresco Maven SDK to create projects for both your
@@ -548,8 +500,8 @@ testing. You'll see examples of this in later tutorials.
 
 Where to Find More Information
 ==============================
-- The [official documentation](https://docs.alfresco.com/5.2/concepts/sdk-intro.html)
-on the Alfresco Maven SDK is on <https://docs.alfresco.com>.
+- The [official documentation](https://support.hyland.com/r/Alfresco/Alfresco-In-Process-SDK/4.9/Alfresco-In-Process-SDK/Install)
+on the Alfresco Maven SDK is on  https://github.com/Alfresco/alfresco-sdk.
 - The [Alfresco Developer Series](https://ecmarchitect.com/alfresco-developer-series)
 on [ECM Architect](https://ecmarchitect.com) has free tutorials on custom
 content models, actions, behaviors, workflows, and web scripts.
