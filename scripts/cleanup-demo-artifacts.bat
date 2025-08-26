@@ -33,54 +33,52 @@ set "TOREMOVE=%TMPDIR%\to_remove.txt"
 del /q "%TOREMOVE%" >nul 2>nul
 
 rem ------------------------------------------------------------------
-rem Patterns: "name|optional-path-fragment"
-rem NOTE: CMD can’t do complex path-matching; we primarily match by name.
-rem       Fragments are kept for readability but not strictly enforced.
-rem       Run with -n to review before deletion.
+rem Patterns: "name,optional-path-fragment"
+rem NOTE: CMD primarily matches by filename; fragments are advisory.
 rem ------------------------------------------------------------------
 > "%PATTERNS%" (
-  echo CustomContentModelIT.java|*\src\*\java\*\platformsample\*
-  echo DemoComponentIT.java|*\src\*\java\*\platformsample\*
-  echo HelloWorldWebScriptIT.java|*\src\*\java\*\platformsample\*
+  echo CustomContentModelIT.java,..\src\*\java\*\platformsample\*
+  echo DemoComponentIT.java,..\src\*\java\*\platformsample\*
+  echo HelloWorldWebScriptIT.java,..\src\*\java\*\platformsample\*
 
-  echo Demo.java|*\src\main\java\*\platformsample\*
-  echo DemoComponent.java|*\src\main\java\*\platformsample\*
-  echo HelloWorldWebScript.java|*\src\main\java\*\platformsample\*
+  echo Demo.java,..\src\main\java\*\platformsample\*
+  echo DemoComponent.java,..\src\main\java\*\platformsample\*
+  echo HelloWorldWebScript.java,..\src\main\java\*\platformsample\*
 
-  echo helloworld.get.desc.xml|*\src\main\resources\alfresco\extension\templates\webscripts\alfresco\tutorials\*
-  echo helloworld.get.html.ftl|*\src\main\resources\alfresco\extension\templates\webscripts\alfresco\tutorials\*
-  echo helloworld.get.js|*\src\main\resources\alfresco\extension\templates\webscripts\alfresco\tutorials\*
+  echo helloworld.get.desc.xml,..\src\main\resources\alfresco\extension\templates\webscripts\alfresco\tutorials\*
+  echo helloworld.get.html.ftl,..\src\main\resources\alfresco\extension\templates\webscripts\alfresco\tutorials\*
+  echo helloworld.get.js,..\src\main\resources\alfresco\extension\templates\webscripts\alfresco\tutorials\*
 
-  echo content-model.properties|*\src\main\resources\alfresco\module\*\messages\*
-  echo workflow-messages.properties|*\src\main\resources\alfresco\module\*\messages\*
-  echo content-model.xml|*\src\main\resources\alfresco\module\*\model\*
-  echo workflow-model.xml|*\src\main\resources\alfresco\module\*\model\*
-  echo bootstrap-context.xml|*\src\main\resources\alfresco\module\*\context\*
-  echo service-context.xml|*\src\main\resources\alfresco\module\*\context\*
-  echo webscript-context.xml|*\src\main\resources\alfresco\module\*\context\*
-  echo sample-process.bpmn20.xml|*\src\main\resources\alfresco\module\*\workflow\*
+  echo content-model.properties,..\src\main\resources\alfresco\module\*\messages\*
+  echo workflow-messages.properties,..\src\main\resources\alfresco\module\*\messages\*
+  echo content-model.xml,..\src\main\resources\alfresco\module\*\model\*
+  echo workflow-model.xml,..\src\main\resources\alfresco\module\*\model\*
+  echo bootstrap-context.xml,..\src\main\resources\alfresco\module\*\context\*
+  echo service-context.xml,..\src\main\resources\alfresco\module\*\context\*
+  echo webscript-context.xml,..\src\main\resources\alfresco\module\*\context\*
+  echo sample-process.bpmn20.xml,..\src\main\resources\alfresco\module\*\workflow\*
 
-  echo test.html|*\src\main\resources\META-INF\resources\*
+  echo test.html,..\src\main\resources\META-INF\resources\*
 
-  echo HelloWorldWebScriptControllerTest.java|*\src\test\java\*\platformsample\*
+  echo HelloWorldWebScriptControllerTest.java,..\src\test\java\*\platformsample\*
 
-  echo *-share.properties|*\src\main\resources\alfresco\web-extension\messages\*
-  echo *-example-widgets.xml|*\src\main\resources\alfresco\web-extension\site-data\extensions\*
-  echo *-slingshot-application-context.xml|*\src\main\resources\alfresco\web-extension\*
+  echo *-share.properties,..\src\main\resources\alfresco\web-extension\messages\*
+  echo *-example-widgets.xml,..\src\main\resources\alfresco\web-extension\site-data\extensions\*
+  echo *-slingshot-application-context.xml,..\src\main\resources\alfresco\web-extension\*
 
-  echo simple-page.get.desc.xml|*\src\main\resources\alfresco\web-extension\site-webscripts\com\example\pages\*
-  echo simple-page.get.html.ftl|*\src\main\resources\alfresco\web-extension\site-webscripts\com\example\pages\*
-  echo simple-page.get.js|*\src\main\resources\alfresco\web-extension\site-webscripts\com\example\pages\*
-  echo README.md|*\src\main\resources\alfresco\web-extension\site-webscripts\org\alfresco\*
+  echo simple-page.get.desc.xml,..\src\main\resources\alfresco\web-extension\site-webscripts\com\example\pages\*
+  echo simple-page.get.html.ftl,..\src\main\resources\alfresco\web-extension\site-webscripts\com\example\pages\*
+  echo simple-page.get.js,..\src\main\resources\alfresco\web-extension\site-webscripts\com\example\pages\*
+  echo README.md,..\src\main\resources\alfresco\web-extension\site-webscripts\org\alfresco\*
 
-  echo TemplateWidget.css|*\src\main\resources\META-INF\resources\*\js\tutorials\widgets\css\*
-  echo TemplateWidget.properties|*\src\main\resources\META-INF\resources\*\js\tutorials\widgets\i18n\*
-  echo TemplateWidget.html|*\src\main\resources\META-INF\resources\*\js\tutorials\widgets\templates\*
-  echo TemplateWidget.js|*\src\main\resources\META-INF\resources\*\js\tutorials\widgets\*
+  echo TemplateWidget.css,..\src\main\resources\META-INF\resources\*\js\tutorials\widgets\css\*
+  echo TemplateWidget.properties,..\src\main\resources\META-INF\resources\*\js\tutorials\widgets\i18n\*
+  echo TemplateWidget.html,..\src\main\resources\META-INF\resources\*\js\tutorials\widgets\templates\*
+  echo TemplateWidget.js,..\src\main\resources\META-INF\resources\*\js\tutorials\widgets\*
 )
 
-rem Build removal list
-for /f "usebackq tokens=1,2 delims=|" %%A in ("%PATTERNS%") do (
+rem Build removal list (match by filename; filter later if you want)
+for /f "usebackq tokens=1,2 delims=," %%A in ("%PATTERNS%") do (
   for /r %%F in (%%A) do (
     call :ADD_UNIQUE "%%~fF"
   )
@@ -88,8 +86,8 @@ for /f "usebackq tokens=1,2 delims=|" %%A in ("%PATTERNS%") do (
 
 rem Optional: add docker items and strip pom.xml modules
 if "%WITH_DOCKER%"=="1" (
-  if exist "%cd%\run.sh"   call :ADD_UNIQUE "%cd%\run.sh"
-  if exist "%cd%\run.bat"  call :ADD_UNIQUE "%cd%\run.bat"
+  if exist "%cd%\run.sh"    call :ADD_UNIQUE "%cd%\run.sh"
+  if exist "%cd%\run.bat"   call :ADD_UNIQUE "%cd%\run.bat"
   if exist "%cd%\README.md" call :ADD_UNIQUE "%cd%\README.md"
 
   if exist "%cd%\docker" call :ADD_UNIQUE "%cd%\docker"
@@ -115,7 +113,6 @@ if not "%ASSUME_YES%"=="1" (
 rem Delete files/dirs
 for /f "usebackq delims=" %%P in ("%TOREMOVE%") do (
   if exist "%%~fP\NUL" (
-    rem directory
     rmdir /s /q "%%~fP" 2>nul
   ) else (
     del /f /q "%%~fP" 2>nul
@@ -125,7 +122,7 @@ for /f "usebackq delims=" %%P in ("%TOREMOVE%") do (
 :AFTER_DELETE
 echo Updating XML configs...
 
-rem -- If requested, strip docker modules from pom.xml (global line filter) --
+rem -- If requested, strip docker modules from pom.xml --
 if "%WITH_DOCKER%"=="1" (
   call :STRIP_DOCKER_MODULES_IN_POM
 )
@@ -136,7 +133,7 @@ for /f "delims=" %%M in ('dir /b /s module-context.xml 2^>nul ^| findstr /i "\\s
   echo   cleaned: %%~fM
 )
 
-rem -- Ensure minimal share-config-custom.xml in Share modules only --
+rem -- Ensure minimal share-config-custom.xml ONLY for Share modules --
 for /f "delims=" %%R in ('dir /b /s /ad ^| findstr /i "\\src\\main\\resources$"') do (
   if exist "%%~fR\alfresco\web-extension" (
     set "TARGET=%%~fR\share-config-custom.xml"
@@ -158,7 +155,6 @@ for /f "delims=" %%R in ('dir /b /s /ad ^| findstr /i "\\src\\main\\resources$"'
 )
 
 echo Cleaning up empty directories...
-rem Try removing empty directories (multiple passes, bottom-up)
 for /l %%I in (1,1,3) do (
   for /f "delims=" %%D in ('dir /b /s /ad 2^>nul ^| sort /R') do (
     rd "%%~fD" 2>nul
@@ -195,7 +191,6 @@ exit /b
 :STRIP_DOCKER_MODULES_IN_POM
 if not exist "pom.xml" exit /b
 set "POMTMP=%TMPDIR%\pom_filtered.tmp"
-rem Remove any <module>...-docker</module> lines (and <module>docker</module>)
 findstr /v /r /c:"<module>[ ]*docker[ ]*</module>" ^
               /c:"<module>[ ]*.*-platform-docker[ ]*</module>" ^
               /c:"<module>[ ]*.*-share-docker[ ]*</module>" ^
