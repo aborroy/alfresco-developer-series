@@ -36,7 +36,10 @@ rem ------------------------------------------------------------------
 rem Patterns: "name,optional-path-fragment"
 rem NOTE: CMD primarily matches by filename; fragments are advisory.
 rem ------------------------------------------------------------------
+set "PATTERNS=%TEMP%\patterns.txt"
+
 > "%PATTERNS%" (
+  echo DemoComponent.java,..\src\main\java\*\platformsample\*
   echo CustomContentModelIT.java,..\src\*\java\*\platformsample\*
   echo DemoComponentIT.java,..\src\*\java\*\platformsample\*
   echo HelloWorldWebScriptIT.java,..\src\*\java\*\platformsample\*
@@ -82,8 +85,13 @@ for /f "usebackq tokens=1,2 delims=," %%A in ("%PATTERNS%") do (
   for /r %%F in (%%A) do (
     call :ADD_UNIQUE "%%~fF"
   )
+  set "NAME=%%A"
+  set "PATTERN=%%B"
+  echo Processing file !NAME! in path !PATTERN!
+  
+  
 )
-
+ 
 rem Optional: add docker items and strip pom.xml modules
 if "%WITH_DOCKER%"=="1" (
   if exist "%cd%\run.sh"    call :ADD_UNIQUE "%cd%\run.sh"
