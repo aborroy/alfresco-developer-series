@@ -48,16 +48,41 @@ those dependencies and so on). Maven can then retrieve and cache those
 dependencies for you. If you've ever spent time chasing down JAR file after
 JAR file, the value of such a tool will be immediately obvious.
 
-Alfresco Module Package (AMP)
+Alfresco Add-ons: AMP and JAR
 -----------------------------
 
+Traditionally, Alfresco customizations have been packaged and deployed as Alfresco Module Packages (AMPs). However, modern Alfresco development also supports deploying customizations directly as JAR files, which is often simpler and more aligned with standard Java practices.
+
+**AMP (Alfresco Module Package)**
+
 An AMP is a ZIP file with a folder structure that follows a specific convention.
-AMP files are used to make it easy to share and deploy customizations to the
-Alfresco platform. If your project is about making customizations to the
-repository tier (the /alfresco web application) you will create a "repo" AMP.
-If your project is about making customizations to the Share tier (the /share web
-application) you will create a "share" AMP. It is quite common for a project
-to require changes in both tiers, so in that case you will create two AMPs.
+AMP files are designed to make it easy to share and deploy customizations to the Alfresco platform.
+
+* If your project customizes the Repository tier (`/alfresco` web application), you create a repo AMP.
+* If your project customizes the Share tier (`/share` web application), you create a share AMP.
+* Many real-world projects modify both tiers, requiring two AMPs.
+
+AMPs are applied to an Alfresco WAR file using the MMT tool (Module Management Tool), which merges the AMP content into the target WAR.
+
+**JAR (Java ARchive)**
+
+A JAR file is the standard Java packaging format, and in recent Alfresco versions it can be used directly to deploy extensions without needing to create an AMP.
+
+* A JAR simply needs to include the correct Alfresco-specific resources (like `alfresco/module/<module-id>`).
+* JARs are placed in the `WEB-INF/lib` folder of the Alfresco web application or, when using Docker, mounted into the `modules/platform` (for Repo) or `modules/share` (for Share) directories.
+* This approach avoids the AMP-to-WAR overlay step and makes the deployment lifecycle closer to a typical Java application.
+
+**Key Differences**
+
+| Aspect                 | AMP                                                             | JAR                                                                                                    |
+| ---------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Packaging          | Custom ZIP structure with Alfresco conventions                  | Standard Java JAR                                                                                      |
+| Deployment         | Requires applying AMP to WAR using MMT tool                     | Drop into `lib` folder or `modules/` directory                                                         |
+| Scope              | Can include web resources, patches, config, JARs and repo/share code | Typically used for Java classes, Spring beans, and config |
+| Flexibility        | Powerful, but heavier                                           | Lighter, faster                                              |
+
+> **Best practice today** Use JAR deployment for most extensions, unless you specifically need AMP features like adding third party JAR dependencies.
+
 
 Alfresco Maven SDK
 ------------------
@@ -72,22 +97,32 @@ Alfresco and Share WARs you don't need the Alfresco Maven SDK. But if you intend
 to write code that runs within either of those web applications, the Alfresco
 Maven SDK is where you need to start.
 
-A quick word about versions. This tutorial assumes you are using Alfresco Maven
-SDK 4.12 which works with Alfresco 25.1. If you are using a version of Alfresco
-older than 7.0 but greater than or equal to 6.2, you can use version 4.1 of the
-SDK. If you are using a version of Alfresco older than 6.2 but greater than or
-equal to 6.0.1, you can use version 4.0 of the SDK. If you are using a version
-of Alfresco older than 6.0.1 but greater than or equal to 4.2.7, you can use
-version 3.0.1 of the SDK. The biggest difference between 4.0 and 3.0.1 is the
-use of Docker instead of an embedded Tomcat and in-memory database.
+**SDK and Alfresco Version Compatibility**
 
-If you are using a version of Alfresco newer than 4.0 but older than 4.2.7 you
-can use version 2.x of the SDK. You can use the 2.x version of the SDK with this
-and other tutorials if you must, but you'll almost surely be affected by some
-differences. If you are using a version of Alfresco older than 4.x you'll have
-to use the old Ant-based SDK. The rest of this document won't apply to you.
+Choosing the correct Alfresco Maven SDK version depends on the version of Alfresco Content Services (ACS) you are targeting.
 
-Now you have a high-level understanding of Apache Maven, AMPs, and the Alfresco
+The table below summarizes the mapping:
+
+| Alfresco Version        | SDK Version   | Notes                                                                      |
+| ----------------------- | ------------- | -------------------------------------------------------------------------- |
+| 25.x                    | 4.12          | Current release. Tutorial assumes this version.                            |
+| 7.0 to 24.x             | 4.3 to 4.11   | Standard Maven SDK for modern Alfresco.                                    |
+| 6.2 to < 7.0            | 4.1           | Same SDK as above; ensures compatibility.                                  |
+| 6.0.1 to < 6.2          | 4.0           | First SDK version based on Docker.                                         |
+| 4.2.7 to < 6.0.1        | 3.0.1         | Still supported, but less convenient than 4.x.                             |
+| 4.0 to < 4.2.7          | 2.x           | Older SDK, possible differences in tutorial steps.                         |
+| < 4.0                   | Ant-based SDK | Outdated. This tutorial does not apply.                                    |
+
+**Key Differences Between SDK Versions**
+
+* SDK 4.x: Uses Docker-based environment, aligning with modern development workflows.
+* SDK 3.x and earlier: Relied on embedded Tomcat and an in-memory database, which are no longer recommended.
+* SDK 2.x: Still Maven-based, but with older project structure and limited features.
+* Ant-based SDK: Legacy, not supported by these tutorials.
+
+> **Best practice** If you are on Alfresco 6.0.1 or newer, use SDK 4.x. For anything older, consider upgrading your platform before investing in custom development.
+
+Now you have a high-level understanding of Apache Maven, AMPs / JARs, and the Alfresco
 Maven SDK. It's time to see them in action.
 
 Your First Project
