@@ -3,16 +3,13 @@
 Adapted for the **Alfresco Community**, September 2025  
 Based on Jeff Potts *Alfresco Developer Series*.
 
-
-License
-=======
-
 ![](./images/cc-by-sa-88x31.png)
 
-This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+> This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 
 Introduction
 ============
+
 This tutorial is for people who have been handed a project that requires you to
 customize Alfresco in some way and you're thinking, "Now what?". By the end,
 you'll know:
