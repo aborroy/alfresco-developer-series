@@ -1,0 +1,1642 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Tutorials and best practices for Alfresco developers">
+      
+      
+      
+      
+        <link rel="prev" href="../../../maven-sdk/tutorial/tutorial/">
+      
+      
+        <link rel="next" href="../../../actions/tutorial/tutorial/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>Content Types & CMIS - Alfresco Developer Series</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.e53b48f4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#working-with-custom-content-types-in-alfresco" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Alfresco Developer Series" class="md-header__button md-logo" aria-label="Alfresco Developer Series" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Alfresco Developer Series
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Content Types & CMIS
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aborroy/alfresco-developer-series" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Alfresco Developer Series" class="md-nav__button md-logo" aria-label="Alfresco Developer Series" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Alfresco Developer Series
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aborroy/alfresco-developer-series" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maven-sdk/tutorial/tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Maven SDK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Content Types & CMIS
+    
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../actions/tutorial/tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Actions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../behaviors/tutorial/tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Behaviors
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../webscripts/tutorial/tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WebScripts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../workflow/tutorial/tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Workflows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="working-with-custom-content-types-in-alfresco">Working With Custom Content Types in Alfresco<a class="headerlink" href="#working-with-custom-content-types-in-alfresco" title="Permanent link">&para;</a></h1>
+<p><em>Jeff Potts, <a href="https://www.metaversant.com">Metaversant Group</a> — July, 2021</em></p>
+<h1 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h1>
+<p><img alt="" src="../images/cc-by-sa-88x31.png" /></p>
+<p>This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.</p>
+<h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
+<p>Alfresco is a flexible platform for developing content management applications. The first step in the process of designing a custom content management application is creating the content model.</p>
+<p>The content model Alfresco provides out-of-the-box is fairly comprehensive. In fact, for basic document management needs, you could probably get by with the out-of-the-box model. Of course, you'd be missing out on a lot of the power and functionality that having a model customized for your business needs provides.</p>
+<p>Part 1 of this document discusses how to create your own custom content model, but you won’t want to stop there. What good would a custom content model be if you did nothing exciting with the content? After an example content model is in place, Part 2 shows how to configure Alfresco Share to expose the custom model in the user interface, then Part 3 shows how to use OpenCMIS, a standard Java API, to create, search for, and delete content. You can safely swap the order of Parts 2 and 3 according to your interest.</p>
+<p>You should already be familiar with general document management and Alfresco functionality from an end-user perspective. If you want to follow along with Part 3, you should also know how to write basic Java code. See “<a href="#where-to-find-more-information">Where to find more information</a>” at the end of this document for a link to the code samples that accompany this article.</p>
+<h1 id="part-1-implementing-a-custom-content-model">Part 1: Implementing a Custom Content Model<a class="headerlink" href="#part-1-implementing-a-custom-content-model" title="Permanent link">&para;</a></h1>
+<p>Out-of-the-box, Alfresco gives you folders and content and a few other content types. But you’ll probably want to create your own business-specific types. This section discusses how that works.</p>
+<h2 id="modeling-basics">Modeling Basics<a class="headerlink" href="#modeling-basics" title="Permanent link">&para;</a></h2>
+<p>A content model describes the data being stored in the repository. The content model is critical--without it, Alfresco would be little more than a file system. Here is a list of key information the content model provides Alfresco:</p>
+<ul>
+<li>
+<p>Fundamental data types and how those data types should be persisted to the database. For example, without a content model, Alfresco wouldn't know the difference between a <code>String</code> and a <code>Date</code>.</p>
+</li>
+<li>
+<p>Higher order data types like “content” and “folder” as well as custom content types like “Standard Operating Procedure” or “Contract”.</p>
+</li>
+<li>
+<p>Out-of-the-box aspects like “auditable” and “classifiable” as well as custom aspects like “rateable” or “commentable”.</p>
+</li>
+<li>
+<p>Properties (or metadata) specific to each content type.</p>
+</li>
+<li>
+<p>Constraints placed on properties (such as property values that must match a certain pattern or property values that must come from a specific list of possible values).</p>
+</li>
+<li>
+<p>How to index content for searching.</p>
+</li>
+<li>
+<p>Relationships between content types.</p>
+</li>
+</ul>
+<p>Alfresco content models are built using a small set of building blocks: Types, Properties, Property types, Constraints, Associations, and Aspects.</p>
+<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<p><em>Types</em> are like types or classes in the object-oriented world. They can be used to model business objects, they have properties, and they can inherit from a parent type. “Content”, “Person”, and “Folder” are three important types defined out-of-the-box. Custom types are limited only by your imagination and business requirements. Examples include things like “Expense Report”, “Medical Record”, “Movie”, “Song”, and “Comment”.</p>
+<p>Note that types, properties, constraints, associations, and aspects have names. Names are made unique across the repository by using a namespace specific to the model. The namespace has an abbreviation. Rather than use “Example” or “Foo”, this tutorial assumes Alfresco is being implemented for a fictitious company called SomeCo. So, for example, SomeCo might define a custom model which declares a namespace with the URI of “http://www.someco.com/model/content/1.0” and a prefix of “sc”. Any type defined as part of that model would have a name prefixed with “sc:”. You'll see how models are actually defined using XML shortly, but I wanted to introduce the concept of namespaces and prefixes so you would know what they are when you see them. Using namespaces in this way helps prevent name collisions when content models are shared across repositories. In your project it is definitely important that you use your own namespace.</p>
+<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<p><em>Properties</em> are pieces of metadata associated with a particular type. For example, the properties of an Expense Report might include things like “Employee Name”, “Date submitted”, “Project”, “Client”, “Expense Report Number”, “Total amount”, and “Currency”. The Expense Report might also include a “content” property to hold the actual expense report file (maybe it is a PDF or an Excel spreadsheet, for example).</p>
+<h3 id="property-types">Property Types<a class="headerlink" href="#property-types" title="Permanent link">&para;</a></h3>
+<p><em>Property types</em> (or data types) describe the fundamental types of data the repository will use to store properties. Examples include things like strings, dates, floats, and booleans. Because these data types literally are fundamental, they are pretty much the same for everyone so they are defined for us out-of-the-box. (If you wanted to change the fact that the Alfresco data-type “text” maps to your own custom class rather than <code>java.lang.String</code>, you could, but let's not get ahead of ourselves).</p>
+<h3 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h3>
+<p><em>Constraints</em> can optionally be used to restrict the value that Alfresco will store in a property. There are four types of constraints available: <code>REGEX</code>, <code>LIST</code>, <code>MINMAX</code>, and <code>LENGTH</code>. <code>REGEX</code> is used to make sure that a property value matches a regular expression pattern. <code>LIST</code> is used to define a list of possible values for a property. <code>MINMAX</code> provides a numeric range for a property value. <code>LENGTH</code> sets a restriction on the length of a string.</p>
+<p>Constraints can be defined once and reused across a model. For example, out-of-the-box, Alfresco makes available a constraint named <code>cm:filename</code> that defines a regular expression constraint for file names. If a property in a custom type needs to restrict values to those matching the filename pattern, the custom model doesn't have to define the constraint again, it simply refers to the <code>cm:filename</code> constraint.</p>
+<h3 id="associations">Associations<a class="headerlink" href="#associations" title="Permanent link">&para;</a></h3>
+<p><em>Associations</em> define relationships between types. Without associations, models would be full of types with properties that store “pointers” to other pieces of content. Going back to the expense report example, each expense report might be stored as an individual object. In addition to an Expense Report type there could also be an Expense type. Associations tell Alfresco about the relationship between an Expense Report and one or more Expenses.</p>
+<p>Associations come in two flavors: Peer Associations and Child Associations. (Note that Alfresco refers to Peer Associations simply as “Associations” but I think that's confusing so I'll refer to them with the “Peer” distinction). Peer Associations are just that—-they define a relationship between two objects but neither is subordinate to the other. Child Associations, on the other hand, are used when the target of the association (or child) should not exist when the source (or parent) goes away. This works like a cascaded delete in a relational database: Delete the parent and the child goes away.</p>
+<p>An out-of-the-box association that's easy to relate to is <code>cm:contains</code>. The <code>cm:contains</code> association defines a Child Association between folders (<code>cm:folder</code>) and all other objects (instances of <code>sys:base</code> or its child types). So, for example, a folder named “Human Resources” (an instance of <code>cm:folder</code>) would have a <code>cm:contains</code> association between itself and all of its immediate children. The children could be instances of custom types like Resume, Policy, or Performance Review.</p>
+<p>Another example might be a “Whitepaper” and its “Related Documents”. Suppose that a company publishes whitepapers on their web site. The whitepaper might be related to other documents such as product marketing materials or other research. If the relationship between the whitepaper and its related documents is formalized it can be shown in the user interface. To implement this, as part of the Whitepaper content type, you'd define a Peer Association. You could use <code>sys:base</code> as the target type to allow any piece of content in the repository to be associated with a Whitepaper or you could restrict the association to a specific type like <code>cm:content</code> or <code>sc:whitepaper</code>.</p>
+<h3 id="aspects">Aspects<a class="headerlink" href="#aspects" title="Permanent link">&para;</a></h3>
+<p>Before discussing <em>Aspects</em>, let's first consider how inheritance works and the implications on the content model. Suppose Alfresco will be used to manage content to be displayed in a portal (quite a common requirement, by the way). Suppose further that only a subset of the content in the repository is content that should be shown in the portal. And, when content is to be displayed in the portal, there are some additional pieces of metadata that need to be captured. A simple example might be a requirement to show the date and time a piece of content was approved.</p>
+<p>Using the content modeling concepts discussed so far, there are only two options. The first option is to define a root content type with the “publish date” property. All subsequent content types would inherit from this root type thus making the publish date available everywhere. The second option is to individually define the publish date property only in the content types that are going to be published to the portal.</p>
+<p>Neither of these are great options. In the first option, there would be a property in each-and-every piece of content in the repository that may or may not ultimately be used which can lead to performance and maintenance problems. The second option isn't much better for a few reasons. First, it assumes the content types to be published in the portal are known ahead of time. Second, it opens up the possibility that the same type of metadata might get defined differently across content types. Last, it doesn't provide an easy way to encapsulate behavior or business logic that might be tied to the publish date.</p>
+<p>As you have probably figured out by now, there is a third option that addresses these issues: Aspects. Aspects “cross-cut” the content model with properties and associations by attaching them to content types (or even specific instances of content) when and where they are needed.</p>
+<p>Going back to the portal example, a “Portal Displayable” aspect could be defined with a publish date property. The aspect would then be added to any piece of content, regardless of type, that needed to be displayed in the portal.</p>
+<h3 id="custom-behavior">Custom Behavior<a class="headerlink" href="#custom-behavior" title="Permanent link">&para;</a></h3>
+<p>You may find that your custom aspect or custom type needs to have behavior or business logic associated with it. For example, every time an Expense Report is checked in you want to recalculate the total by iterating through the associated Expenses. One option would be to incorporate this logic into rules or actions in the Alfresco web client or your custom web application. But some behavior is so fundamental to the aspect or type that it should really be “bound” to the aspect or type and invoked any time Alfresco works with those objects. If you are curious how this works, read the <a href="https://ecmarchitect.com/alfresco-developer-series">Custom Behaviors tutorial</a> on ecmarchitect.com. For now, just know that associating business logic with your custom aspects and types (or overriding out-of-the-box behavior) is possible.</p>
+<h3 id="content-modeling-best-practices">Content Modeling Best Practices<a class="headerlink" href="#content-modeling-best-practices" title="Permanent link">&para;</a></h3>
+<p>Now that you know the building blocks of a content model, it makes sense to consider some best practices. Here are the top ten:</p>
+<ol>
+<li>
+<p><em>Don't change Alfresco's out-of-the-box content model</em>. If you can possibly avoid it, do not change Alfresco's out-of-the-box content model. Instead, extend it with your own custom content model. If requirements call for several different types of content to be stored in the repository, create a content type for each one that extends from <code>cm:content</code> or from an enterprise-wide root content type.</p>
+</li>
+<li>
+<p><em>Consider implementing an enterprise-wide root type</em>. Although the need for a common ancestor type is lessened through the use of aspects, it still might be a good idea to define an enterprise-wide root content type from which all other content types in the repository inherit if for no other reason than it gives content managers a “catch-all” type to use when no other type will do.</p>
+</li>
+<li>
+<p><em>Be conservative early on by adding only what you know you need</em>. A corollary to that is <em>prepare yourself to blow away the repository multiple times until the content model stabilizes</em>. Once you get content in the repository that implements the types in your model, making model additions is easy, but subtractions aren't. Alfresco will complain about “integrity errors” and may make content inaccessible when the content's type or properties don't match the content model definition. When this happens to you (and it will happen) your options are to either (1) leave the old model in place, (2) attempt to export the content, modify the ACP XML file, and re-import, or (3) drop the Alfresco tables, clear the data directory, and start fresh. As long as everyone on the team is aware of this, option three is not a big deal in development, but make sure expectations are set appropriately and have a plan for handling model changes once you get to production. This might be an area where Alfresco will improve in future releases, but for now it is something you have to watch out for.</p>
+</li>
+<li>
+<p><em>Avoid unnecessary content model depth</em>. I am not aware of any Alfresco Content Modeling Commandments that say, “Thou shall not exceed X levels of depth in thine content model lest thou suffer the wrath of poor performance” but it seems logical that degradation would occur at some point. If your model has several levels of depth beyond <code>cm:content</code>, you should at least do a proof-of-concept with a realistic amount of data, software, and hardware to make sure you aren't creating a problem for yourself that might be very difficult to reverse down the road.</p>
+</li>
+<li>
+<p><em>Take advantage of aspects</em>. In addition to the potential performance and overhead savings through the use of aspects, aspects promote reuse across the model, the business logic, and the presentation layer. When working on your model you find that two or more content types have properties in common, ask yourself if those properties are being used to describe some higher-level characteristic common across the types that might better be modeled as an aspect.</p>
+</li>
+<li>
+<p><em>It may make sense to define types that have no properties or associations</em>. You may find yourself defining a type that gets everything it needs through either inheritance from a parent type or from an aspect (or both). In those cases you might ask yourself if the “empty” type is really necessary. In my opinion, it should at least be considered. It might be worth it just to distinguish the content from other types of content for search purposes, for example. Or, while you might not have any specialized properties or associations for the content type you could have specialized behavior that's only applicable to instances of the content type.</p>
+</li>
+<li>
+<p><em>Remember that folders are types too</em>. Like everything else in the model, folders are types which means they can be extended. Content that “contains” other content is common. In the earlier expense report example, one way to keep track of the expenses associated with an expense report would be to model the expense report as a sub-type of <code>cm:folder</code>.</p>
+</li>
+<li>
+<p><em>Don't be afraid to have more than one content model XML file</em>. You’ll see how content models are defined shortly, but when it is time to implement your model, keep this in mind: It might make sense to segment your models into multiple namespaces and multiple XML files. Names should be descriptive. Don't deploy a model file called “customModel.xml” or “myModel.xml”.</p>
+</li>
+<li>
+<p><em>Implement a Java class that corresponds to each custom content model you define</em>. Within each content model Java class, define constants that correspond to model namespaces, type names, property names, aspect names, etc. You'll find yourself referring to the “Qname” of types, properties, and aspects quite often so it helps to have constants defined in an intuitive way.</p>
+</li>
+<li>
+<p><em>Use the source</em>! The out-of-the-box content model is a great example of what's possible. The forumModel and recordsModel have some particularly useful examples. In the next section I'll tell you where the model files live and what's in each so you'll know where to look later when you say to yourself, “Surely, the folks at Alfresco have done this before”.</p>
+</li>
+</ol>
+<h3 id="out-of-the-box-models">Out-of-the-Box Models<a class="headerlink" href="#out-of-the-box-models" title="Permanent link">&para;</a></h3>
+<p>The Alfresco source code is an indispensable reference tool which you should always have at the ready, along with the documentation, wiki, forums, and Jira. With that said, if you are following along with this article but have not yet downloaded the source, you are in luck. The out-of-the-box content model files are written in XML and get deployed with the web client. They can be found in the alfresco.war inside various JAR files stored in /WEB-INF/lib. The table below describes several of the out-of-the-box model files.</p>
+<p>|  JAR | File | Namespaces | Prefix | Imports | Description |
+| -----|--------------- | ------------ | --------------- | ------------------------ |
+| alfresco-data-model-[version].jar | dictionaryModel.xml | model/dictionary/1.0 | d | None | Fundamental data types used in all other models. |
+| alfresco-repository-[version].jar | systemModel.xml | model/system/1.0 | sys | d | System-level objects like base, store root, and reference. |
+| |                 | system/registry/1.0 | reg |  |  |
+| |                 | system/modules/1.0 | module |  |  |
+| alfresco-repository-[version].jar | contentModel.xml | model/content/1.0 | cm | d, sys | Types and aspects extended most often by your models like Content, Folder, Versionable, and Auditable. |
+|  |               | model/rendition/1.0 | rn | | |
+|  |               | model/exif/1.0 | exif | | |
+|  |               | model/audio/1.0 | audio | | |
+|  |               | model/webdav/1.0 | webdav | | |
+| alfresco-repository-[version].jar | bpmModel.xml | model/bpm/1.0 | bpm | d, sys, cm, usr | Advanced workflow types. Extend these when writing your own custom advanced workflows.|
+| alfresco-repository-[version].jar | forumModel.xml | model/forum/1.0 | fm | d, cm | Types and aspects related to adding discussion threads to objects. |</p>
+<p>Table: Some Out-of-the-Box Content Models</p>
+<p>In the interest of brevity, I've left off about 25 other model files. Depending on what you are trying to do with your model, or just to see further examples, you might want to take a look at those at some point.</p>
+<p>In addition to the model files the modelSchema.xsd file can be a good reference. As the name suggests, it defines the XML vocabulary Alfresco content model XML files must adhere to.</p>
+<h2 id="creating-a-custom-content-model">Creating a Custom Content Model<a class="headerlink" href="#creating-a-custom-content-model" title="Permanent link">&para;</a></h2>
+<p>Time for a detailed example. As mentioned earlier, suppose Alfresco is being implemented for a fictional company called “SomeCo”. Pretend that SomeCo is a commercial open source company behind the ever-popular open source project, “SomeSoftware”. SomeCo has decided to re-vamp its web presence by adding new types of content and social functionality to their web site. For this example, let’s focus on the white papers SomeCo wants to make available.</p>
+<p>SomeCo has selected Alfresco as their Enterprise Content Management solution. In addition to managing the content on the new site, SomeCo wants to use Alfresco to manage all of its rich content. So everything will live in the Alfresco repository and some subset of the company’s content will be served up to the external portal.</p>
+<p>The first step is to consider the types and properties needed. There are some pieces of metadata SomeCo wants to track about all content, regardless of whether or not it will be shown on the web site. All documents will have an audience property that identifies who will be most interested in the content. Documents related to SomeCo's software will have properties identifying the Software Product and Software Version.</p>
+<p>Content that needs to be shown on the web site needs to have a flag that indicates the content is “active” and a date when the content was set to active.</p>
+<p>Now let's think about associations. For some documents, SomeCo would like to explicitly define one or more “related documents”. On the web site, SomeCo might choose to show a list of related documents at the bottom of a white paper, for example.</p>
+<p>Taking these requirements into consideration, the team comes up with the content model depicted below:</p>
+<p><img alt="SomeCo's initial content model" src="../images/model.png" /></p>
+<p>As the drawing shows, there is a common root type called <code>sc:doc</code> with one child, <code>sc:whitepaper</code>. Neither type currently has any properties of their own.</p>
+<p>It's not shown on the model diagram, but there is a Peer Association defined as part of <code>sc:doc</code> to keep track of related documents. The target class of the association will be <code>sc:doc</code> because the requirement is to be able to associate any instance of <code>sc:doc</code> or its children with one or more instances of <code>sc:doc</code> or its children.</p>
+<p>In addition, there are two aspects. One, the <code>sc:webable</code> aspect, is used for content that is to be shown on the web site. It contains the <code>sc:isActive</code> flag and <code>sc:published</code> date. The <code>sc:productRelated</code> aspect is used only for content that relates to a SomeCo product. It captures the specific product name the content is related to as well as the product version.</p>
+<p>It should be easy to see how the model might be extended over time. The requirements mentioned social features being needed at some point. A rateable aspect could be added along with a rating type. Comments could work the same way. Or you could choose to use the rating and commenting features available out-of-the-box.</p>
+<p>As new content types are identified they will be added under <code>sc:doc</code>.</p>
+<p>Using the aspect to determine whether or not to show the content on the portal is handy, particularly in light of the SomeCo decision to use Alfresco for all of its content management needs. The repository will contain content that may or may not be on the portal. Portal content will be easily-distinguishable from non-portal content by the presence of the <code>sc:webable</code> aspect.</p>
+<h3 id="setting-up">Setting Up<a class="headerlink" href="#setting-up" title="Permanent link">&para;</a></h3>
+<p>Before starting, let's get a local development environment set up. First I'll give you a list of the tools you'll need, then I'll explain the project organization.</p>
+<h4 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">&para;</a></h4>
+<p>Here is what I am using on my machine:</p>
+<ul>
+<li>MacOS 11.4</li>
+<li>Java OpenJDK 11.0.2</li>
+<li>Apache Maven 3.8.1</li>
+<li>Alfresco Maven SDK 4.2 (No download necessary)</li>
+<li>Docker 20.10.6</li>
+<li>Docker Compose 1.29.1</li>
+</ul>
+<p>By default, when you create an Alfresco project using the Alfresco Maven SDK the project will be configured to depend on the latest stable Alfresco Community Edition build.</p>
+<p>Note that version 3.0.x of the Alfresco Maven SDK works with Alfresco 4.2.7 through and including Alfresco 5.2.x. Version 4.0 of the SDK works with Alfresco 6.0 and higher.
+Version 4.2 of the SDK works with Alfresco 7.0. This tutorial assumes you are using SDK 4.2.0.</p>
+<p>Projects created using the Alfresco Maven SDK are runnable. Version 3.0.x of the SDK uses an embedded Tomcat server and an H2 in-memory database while version 4.0.x of the SDK
+(and newer) uses Docker and Docker Compose. This makes <a href="http://www.alfresco.com/products/community">downloading</a> and installing Alfresco optional. But if you want to run a full Alfresco server locally, you are welcome to do that.</p>
+<p>An IDE is also optional. Most people working with Alfresco use IntelliJ, Eclipse, or something similar.</p>
+<h4 id="project-organization">Project Organization<a class="headerlink" href="#project-organization" title="Permanent link">&para;</a></h4>
+<p>The Alfresco Maven SDK is used to bootstrap the project. It will be configured to package customizations into two AMPs (Alfresco Module Packages): One AMP is for the Alfresco web application (the "repo" tier) and the other is for the Alfresco Share web application (the "Share" tier).</p>
+<p>This tutorial will use two projects:</p>
+<ul>
+<li><strong>content-tutorial</strong>: This is the parent project that includes a repository tier module, a Share tier module, and an integration-tests module. The repository tier module contains the custom content model declaration that you'll create in Part 1 of this tutorial. The share tier module contains the Alfresco Share user interface configuration that you'll create in Part 2 of this tutorial.</li>
+<li><strong>content-tutorial-cmis</strong>: This project contains runnable Java classes that show how to use the CMIS API to perform CRUD functions against content that leverages your custom content model. You'll create this project in Part 3 of this tutorial.</li>
+</ul>
+<p>From an Apache Maven perspective, each of these two projects as well as each of the content-tutorial project's modules will have their own pom.xml.</p>
+<p>Speaking of Apache Maven, I am not going to spend much time talking about how the Alfresco Maven SDK works. If you aren't already familiar with it, you may want to read the <a href="https://ecmarchitect.com/alfresco-developer-series">Getting Started with the Alfresco Maven SDK</a> tutorial on ecmarchitect.com first and then come back to this one.</p>
+<h3 id="implementing-and-deploying-the-model">Implementing and Deploying the Model<a class="headerlink" href="#implementing-and-deploying-the-model" title="Permanent link">&para;</a></h3>
+<p>Here are the steps to follow when configuring a custom content model:</p>
+<ol>
+<li>Create a new project using the Alfresco Maven SDK</li>
+<li>Create a custom content model XML file</li>
+<li>Register the new model XML file using a Spring bean</li>
+<li>Test your changes</li>
+</ol>
+<p>Let's go through each of these.</p>
+<h4 id="step-1-create-a-new-amp-project">Step 1: Create a new AMP Project<a class="headerlink" href="#step-1-create-a-new-amp-project" title="Permanent link">&para;</a></h4>
+<p>The first step is to <strong>create a new project</strong> using the Alfresco Maven SDK. Follow these steps:</p>
+<ol>
+<li>If you have not already done so, create an empty directory that can hold the new projects associated with this tutorial. I'll refer to that as $TUTORIAL_HOME.</li>
+<li>
+<p>Now use the Alfresco Maven SDK to create a project for the repo tier AMP. Using the command line, change directories to $TUTORIAL_HOME, then run:</p>
+<div class="highlight"><pre><span></span><code>mvn archetype:generate -Dfilter=org.alfresco:
+</code></pre></div>
+</li>
+<li>
+<p>Choose the "alfresco-allinone-archetype" archetype.</p>
+</li>
+<li>Choose version 4.2.0 of the archetype if prompted.</li>
+<li>Specify "com.someco" for the <code>groupId</code>.</li>
+<li>Specify "content-tutorial" for the <code>artifactId</code>.</li>
+<li>If your IDE isn't running, start it up and import the content-tutorial project you just created.</li>
+</ol>
+<p>If you have problems after the import, go ahead and resolve those. Consult the Alfresco Maven SDK tutorial if you need help with that.</p>
+<p>Starting with SDK 3.0, the default is to create JAR files. We want to create AMP files instead, so edit the pom.xml and uncomment the maven-assembly-plugin.</p>
+<p>Now you are ready to create your custom content model XML.</p>
+<h4 id="step-2-create-a-custom-content-model-xml-file">Step 2: Create a custom content model XML file<a class="headerlink" href="#step-2-create-a-custom-content-model-xml-file" title="Permanent link">&para;</a></h4>
+<p>Now that you have a project that is ready to package your customizations you can create your content model XML file. To do that, follow these steps:</p>
+<ol>
+<li>
+<p>Models belong in a directory called “model” in your project's module directory, which is:</p>
+<div class="highlight"><pre><span></span><code>$TUTORIAL_HOME/content-tutorial-platform/src/main/resources/alfresco/module/content-tutorial-platform
+</code></pre></div>
+<p>If the "model" directory does not exist when the project is initially created by the Alfresco Maven SDK, go ahead and create it now. If it does exist and there are files in it, delete them now.
+2. Custom models live in the model directory as XML. Create a new XML file in the model directory called "scModel.xml". The name of the file isn't important but you should choose a name that will help you and your team distinguish it from other model files you might add to this directory over time.
+3. Copy the following XML into the scModel.xml file and save.</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="cm">&lt;!-- Definition of new Model --&gt;</span>
+<span class="nt">&lt;model</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:somecomodel&quot;</span><span class="w"> </span><span class="na">xmlns=</span><span class="s">&quot;http://www.alfresco.org/model/dictionary/1.0&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!-- Optional meta-data about the model --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;description&gt;</span>Someco<span class="w"> </span>Model<span class="nt">&lt;/description&gt;</span>
+<span class="w">    </span><span class="nt">&lt;author&gt;</span>Jeff<span class="w"> </span>Potts<span class="nt">&lt;/author&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- Imports are required to allow references to definitions in other models --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;imports&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Import Alfresco Dictionary Definitions --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;import</span><span class="w"> </span><span class="na">uri=</span><span class="s">&quot;http://www.alfresco.org/model/dictionary/1.0&quot;</span><span class="w"> </span><span class="na">prefix=</span><span class="s">&quot;d&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Import Alfresco Content Domain Model Definitions --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;import</span><span class="w"> </span><span class="na">uri=</span><span class="s">&quot;http://www.alfresco.org/model/content/1.0&quot;</span><span class="w"> </span><span class="na">prefix=</span><span class="s">&quot;cm&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/imports&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- Introduction of new namespaces defined by this model --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;namespaces&gt;</span>
+<span class="w">        </span><span class="nt">&lt;namespace</span><span class="w"> </span><span class="na">uri=</span><span class="s">&quot;http://www.someco.com/model/content/1.0&quot;</span><span class="w"> </span><span class="na">prefix=</span><span class="s">&quot;sc&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/namespaces&gt;</span>
+<span class="w">    </span><span class="nt">&lt;constraints&gt;</span>
+<span class="w">        </span><span class="nt">&lt;constraint</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:campaignList&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;LIST&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;parameter</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;allowedValues&quot;</span><span class="nt">&gt;</span>
+<span class="w">                </span><span class="nt">&lt;list&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;value&gt;</span>Application<span class="w"> </span>Syndication<span class="nt">&lt;/value&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;value&gt;</span>Private<span class="w"> </span>Event<span class="w"> </span>Retailing<span class="nt">&lt;/value&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;value&gt;</span>Social<span class="w"> </span>Shopping<span class="nt">&lt;/value&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/list&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/parameter&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/constraint&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/constraints&gt;</span>
+
+<span class="w">    </span><span class="nt">&lt;types&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Enterprise-wide generic document type --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;type</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:doc&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;title&gt;</span>Someco<span class="w"> </span>Document<span class="nt">&lt;/title&gt;</span>
+<span class="w">            </span><span class="nt">&lt;parent&gt;</span>cm:content<span class="nt">&lt;/parent&gt;</span>
+<span class="w">            </span><span class="nt">&lt;associations&gt;</span>
+<span class="w">                </span><span class="nt">&lt;association</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:relatedDocuments&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;title&gt;</span>Related<span class="w"> </span>Documents<span class="nt">&lt;/title&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;source&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;mandatory&gt;</span>false<span class="nt">&lt;/mandatory&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;many&gt;</span>true<span class="nt">&lt;/many&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/source&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;target&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;class&gt;</span>sc:doc<span class="nt">&lt;/class&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;mandatory&gt;</span>false<span class="nt">&lt;/mandatory&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;many&gt;</span>true<span class="nt">&lt;/many&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/target&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/association&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/associations&gt;</span>
+<span class="w">            </span><span class="nt">&lt;mandatory-aspects&gt;</span>
+<span class="w">                </span><span class="nt">&lt;aspect&gt;</span>cm:generalclassifiable<span class="nt">&lt;/aspect&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/mandatory-aspects&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/type&gt;</span>
+
+<span class="w">        </span><span class="nt">&lt;type</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:whitepaper&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;title&gt;</span>Someco<span class="w"> </span>Whitepaper<span class="nt">&lt;/title&gt;</span>
+<span class="w">            </span><span class="nt">&lt;parent&gt;</span>sc:doc<span class="nt">&lt;/parent&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/type&gt;</span>
+
+<span class="w">        </span><span class="nt">&lt;type</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:marketingDoc&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;title&gt;</span>Someco<span class="w"> </span>Marketing<span class="w"> </span>Document<span class="nt">&lt;/title&gt;</span>
+<span class="w">            </span><span class="nt">&lt;parent&gt;</span>sc:doc<span class="nt">&lt;/parent&gt;</span>
+<span class="w">            </span><span class="nt">&lt;properties&gt;</span>
+<span class="w">                </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:campaign&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;type&gt;</span>d:text<span class="nt">&lt;/type&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;multiple&gt;</span>true<span class="nt">&lt;/multiple&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;constraints&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;constraint</span><span class="w"> </span><span class="na">ref=</span><span class="s">&quot;sc:campaignList&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/constraints&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/property&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/properties&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/type&gt;</span>
+
+<span class="w">    </span><span class="nt">&lt;/types&gt;</span>
+
+<span class="w">    </span><span class="nt">&lt;aspects&gt;</span>
+<span class="w">        </span><span class="nt">&lt;aspect</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:webable&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;title&gt;</span>Someco<span class="w"> </span>Webable<span class="nt">&lt;/title&gt;</span>
+<span class="w">            </span><span class="nt">&lt;properties&gt;</span>
+<span class="w">                </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:published&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;type&gt;</span>d:date<span class="nt">&lt;/type&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/property&gt;</span>
+<span class="w">                </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:isActive&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;type&gt;</span>d:boolean<span class="nt">&lt;/type&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;default&gt;</span>false<span class="nt">&lt;/default&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/property&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/properties&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/aspect&gt;</span>
+
+<span class="w">        </span><span class="nt">&lt;aspect</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:productRelated&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;title&gt;</span>Someco<span class="w"> </span>Product<span class="w"> </span>Metadata<span class="nt">&lt;/title&gt;</span>
+<span class="w">            </span><span class="nt">&lt;properties&gt;</span>
+<span class="w">                </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:product&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;type&gt;</span>d:text<span class="nt">&lt;/type&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;mandatory&gt;</span>true<span class="nt">&lt;/mandatory&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;multiple&gt;</span>true<span class="nt">&lt;/multiple&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/property&gt;</span><span class="w">             </span>
+<span class="w">                </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:version&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;type&gt;</span>d:text<span class="nt">&lt;/type&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;mandatory&gt;</span>true<span class="nt">&lt;/mandatory&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;multiple&gt;</span>true<span class="nt">&lt;/multiple&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/property&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/properties&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/aspect&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/aspects&gt;</span>
+<span class="nt">&lt;/model&gt;</span>
+</code></pre></div>
+</li>
+</ol>
+<p>Referring back to the earlier drawing of SomeCo's initial content model, you'll see that it matches up with the XML above with a small exception. As shown in the diagram, there are two aspects, each with two properties, the enterprise-wide ancestor type called <code>sc:doc</code>, a type for whitepapers called <code>sc:whitepaper</code>, and a third type, <code>sc:marketingDoc</code>, which I added so you could see an example of how constraints work.</p>
+<p>When building your own custom content models, you may want to use the out-of-the-box contentModel.xml, discussed earlier, as a reference.</p>
+<p>Here's an important note about the content model schema that may save you some time: Order matters. For example, if you move the <code>associations</code> element after <code>mandatory-aspects</code> Alfresco won't be able to parse your model. Refer to the modelSchema.xsd referenced earlier to determine the expected order.</p>
+<h4 id="step-3-register-the-new-model-with-a-spring-bean">Step 3: Register the new model with a Spring bean<a class="headerlink" href="#step-3-register-the-new-model-with-a-spring-bean" title="Permanent link">&para;</a></h4>
+<p>The next step is to <strong>register the new model with a Spring bean</strong> in a Spring context file. You'll find that the Alfresco Maven SDK has already created a Spring context file for your module in:</p>
+<div class="highlight"><pre><span></span><code>$TUTORIAL_HOME/content-tutorial-platform/src/main/resources/alfresco/module/content-tutorial-platform/context
+</code></pre></div>
+<p>The file is named bootstrap-context.xml. If you open that file you'll see that two Spring beans are already there. They were created by the Alfresco Maven SDK and they are used to wire in an example content model, workflow model, and sample workflows.</p>
+<p>Delete the two sample Spring beans. You will replace these with your own definitions.</p>
+<p>To register the custom content model with Spring, all we have to do is add a new <code>bean</code> element to the list of <code>beans</code>. The new <code>bean</code> element looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="cm">&lt;!-- Registration of new models --&gt;</span>
+<span class="nt">&lt;bean</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;${project.artifactId}_dictionaryBootstrap&quot;</span><span class="w"> </span><span class="na">parent=</span><span class="s">&quot;dictionaryModelBootstrap&quot;</span><span class="w"> </span><span class="na">depends-on=</span><span class="s">&quot;dictionaryBootstrap&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;models&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;list&gt;</span>
+<span class="w">            </span><span class="nt">&lt;value&gt;</span>alfresco/module/${project.artifactId}/model/scModel.xml<span class="nt">&lt;/value&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/list&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div>
+<p>Notice the <code>${project.artifactId}</code> placeholder. That will be automatically replaced by the Alfresco Maven SDK using the <code>artifactId</code> specified in the pom.xml file when Maven generates the AMP.</p>
+<h4 id="step-4-test-your-changes">Step 4: Test Your Changes<a class="headerlink" href="#step-4-test-your-changes" title="Permanent link">&para;</a></h4>
+<p>The last step is to test your changes. The Alfresco Maven SDK makes that easy. Do this:</p>
+<ol>
+<li>From the command line, change directories to $TUTORIAL_HOME/content-tutorial-platform.</li>
+<li>
+<p>Run:</p>
+<div class="highlight"><pre><span></span><code>mvn install -DskipTests
+</code></pre></div>
+</li>
+</ol>
+<p>The first time you do this it may take quite a while. Maven is downloading everything it needs to compile and package the project.</p>
+<p>If everything goes as expected you should see:</p>
+<div class="highlight"><pre><span></span><code>[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.465 s
+[INFO] Finished at: 2019-02-11T13:22:29-06:00
+[INFO] Final Memory: 25M/501M
+[INFO] ------------------------------------------------------------------------
+</code></pre></div>
+<p>If you get a build failure, it is time to debug. Make sure that:</p>
+<ul>
+<li>The bean in service-context.xml refers to the proper path and file name of your custom content model XML file.</li>
+<li>Your custom content model XML file is well-formed and valid.</li>
+</ul>
+<p>If you still have problems, post as much detail as you can in the <a href="http://community.alfresco.com">Alfresco Forums</a>.</p>
+<h4 id="success">Success<a class="headerlink" href="#success" title="Permanent link">&para;</a></h4>
+<p>You have now created an AMP that contains a custom content model. If you go look in:</p>
+<div class="highlight"><pre><span></span><code>$TUTORIAL_HOME/content-tutorial-platform/target
+</code></pre></div>
+<p>you'll see a file named content-tutorial-platform-1.0-SNAPSHOT.amp. That AMP can be installed in an Alfresco installation. For example, if you are running Alfresco using the binary installer, you can copy the AMP to <code>$ALFRESCO_HOME/amps</code> and then run <code>$ALFRESCO_HOME/bin/apply_amps.sh</code> to install the AMP into your Alfresco web application.</p>
+<p>For the purpose of this tutorial, though, let's keep moving. You've got your content model defined but the Alfresco Share user interface doesn't know anything about it yet. You'll learn how to do that next.</p>
+<h1 id="part-2-configuring-alfresco-share">Part 2: Configuring Alfresco Share<a class="headerlink" href="#part-2-configuring-alfresco-share" title="Permanent link">&para;</a></h1>
+<p>Now that the model is defined, you could begin using it right away by writing code against one of Alfresco's API's that creates instances of your custom types, adds aspects, etc. In practice it is usually a good idea to do just that to make sure the model behaves like you expect. In fact, if you just can’t wait to see some code to create, query, and update content, skip to <a href="#part-3-working-with-content-programmatically">Part 3</a>. For everyone else, let's talk about how to configure Alfresco Share so that end-users can work with the custom content model you just created.</p>
+<h2 id="configuring-the-custom-model-in-alfresco-share">Configuring the Custom Model in Alfresco Share<a class="headerlink" href="#configuring-the-custom-model-in-alfresco-share" title="Permanent link">&para;</a></h2>
+<p>Let’s continue by configuring Alfresco Share to work with our custom content model.</p>
+<p>First, think about the Alfresco Share client and all of the places the content model customizations need to show up:</p>
+<ul>
+<li>
+<p><strong>“Is sub-type” criteria</strong>. When a user configures a rule on a space and uses content types as a criteria, the custom types should be a choice in the list of possible content types.</p>
+</li>
+<li>
+<p><strong>“Has aspect” criteria</strong>. When a user configures a rule on a space and uses the presence of an aspect as a criteria, the custom aspects should be a choice in the list of possible aspects.</p>
+</li>
+<li>
+<p><strong>Change type action</strong>. When a user runs the “specialize type” action, either as part of a rule configuration or through the “Change Type” UI action, the custom types should be available.</p>
+</li>
+<li>
+<p><strong>Add aspect</strong>. When a user runs the “add aspect” action, either as part of a rule configuration or through the “Manage Aspects” UI action, the custom aspects should be available.</p>
+</li>
+<li>
+<p><strong>Document Details</strong>. When a user looks at the document details page for a piece of content stored as one of the custom types or with one of the custom aspects attached, the properties section should show the custom properties.</p>
+</li>
+<li>
+<p><strong>Edit Properties</strong>. When a user edits the properties of a piece of content, either with the “full” form or the abbreviated form, the appropriate properties should be shown.</p>
+</li>
+<li>
+<p><strong>Advanced search</strong>. When a user runs an advanced search, they should be able to restrict search results to instances of our custom types and/or content with specific values for the properties of our custom types.</p>
+</li>
+</ul>
+<p>Let's configure Alfresco Share to make each of the areas mentioned above work with our custom content model. To do that, we're going to:</p>
+<ol>
+<li>Create a custom Share configuration file.</li>
+<li>Test our changes.</li>
+</ol>
+<p>Let's do it.</p>
+<h3 id="step-1-create-a-custom-share-configuration-file">Step 1: Create a custom Share configuration file<a class="headerlink" href="#step-1-create-a-custom-share-configuration-file" title="Permanent link">&para;</a></h3>
+<p>A module called "content-repo-share" was added to our project when we created the content-tutorial project using the Alfresco SDK using the "all-in-one" archetype.</p>
+<p>Alfresco Share uses a configuration file called "share-config-custom.xml". The share-config-custom.xml file is a proprietary file composed of numerous “config” elements. Each config element has an “evaluator” and a “condition”. Extending the out-of-the-box Share configuration is a matter of knowing which evaluator/condition to use.</p>
+<p>The location of the share-config-custom.xml file is a little counter-intuitive. Ultimately, we want that file to be placed under META-INF in a JAR file that will go into the Share web application's WEB-INF/lib. Putting the file in a JAR keeps it from overwriting other modules that may also be providing their own share-config-custom.xml.</p>
+<p>Create an empty XML file called "share-config-custom.xml" in:</p>
+<div class="highlight"><pre><span></span><code>$TUTORIAL_HOME/content-tutorial-share/src/main/resources/META-INF
+</code></pre></div>
+<p>We'll add to that file in the next sections.</p>
+<h4 id="add-custom-types-and-aspects-to-lists">Add Custom Types and Aspects to Lists<a class="headerlink" href="#add-custom-types-and-aspects-to-lists" title="Permanent link">&para;</a></h4>
+<p>The first four items in our configuration wish list have to do with telling the Share user interface about custom types and aspects. A single set of configuration will take care of all four items.</p>
+<ol>
+<li>
+<p>Edit the share-config-custom.xml file you just created and add the following:</p>
+<p><div class="highlight"><pre><span></span><code><span class="nt">&lt;alfresco-config&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!-- Document Library config section --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;config</span><span class="w"> </span><span class="na">evaluator=</span><span class="s">&quot;string-compare&quot;</span><span class="w"> </span><span class="na">condition=</span><span class="s">&quot;DocumentLibrary&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/config&gt;</span>
+<span class="nt">&lt;/alfresco-config&gt;</span>
+</code></pre></div>
+2. Now add an <code>aspects</code> element as a child of the <code>config</code> element to identify the aspects that are visible, addable, and removeable:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;aspects&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!-- Aspects that a user can see --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;visible&gt;</span>
+<span class="w">        </span><span class="nt">&lt;aspect</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:webable&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;aspect</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:productRelated&quot;</span><span class="w"> </span><span class="nt">/&gt;</span><span class="w">            </span>
+<span class="w">    </span><span class="nt">&lt;/visible&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- Aspects that a user can add. Same as &quot;visible&quot; if left empty --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;addable&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/addable&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- Aspects that a user can remove. Same as &quot;visible&quot; if left empty --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;removeable&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/removeable&gt;</span>
+<span class="nt">&lt;/aspects&gt;</span>
+</code></pre></div>
+<p>As the comments suggest, the <code>addable</code> and <code>removeable</code> elements can remain empty if the list is the same.
+3. That takes care of aspects. Let’s configure the types. Add a <code>types</code> element as a sibling to the <code>aspects</code> element you just added with the following content:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;types&gt;</span>
+<span class="w">    </span><span class="nt">&lt;type</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;cm:content&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;subtype</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:doc&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;subtype</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:whitepaper&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/type&gt;</span>
+<span class="w">    </span><span class="nt">&lt;type</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:doc&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;subtype</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;sc:whitepaper&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/type&gt;</span>
+<span class="nt">&lt;/types&gt;</span>
+</code></pre></div>
+</li>
+</ol>
+<p>Notice how <code>sc:whitepaper</code> appears in the list twice—once as a subtype of <code>cm:content</code> and once as a subtype of <code>sc:doc</code>. This allows a user to specialize directly to the <code>sc:whitepaper</code> type regardless of whether the original type is <code>cm:content</code> or <code>sc:doc</code>.</p>
+<h3 id="step-2-test-your-changes">Step 2: Test Your Changes<a class="headerlink" href="#step-2-test-your-changes" title="Permanent link">&para;</a></h3>
+<p>You need two things to test this: An Alfresco repository that is running the repo tier AMP you created in Part 1 and an Alfresco Share web application running the Share tier AMP you just started working on. Because you created the project using the all-in-one archetype, you've got both in a single project. So, to test both the repository tier and the Share tier, all you have to do is launch the project using the embedded Tomcat server. Do this:</p>
+<ol>
+<li>Open a command line window.</li>
+<li>Switch to $TUTORIAL_HOME.</li>
+<li>
+<p>Run:</p>
+<div class="highlight"><pre><span></span><code>./run.sh build_start
+</code></pre></div>
+<p>If you get a permissions problem you may have to run <code>chmod u+x run.sh</code> first.</p>
+<p>This script will download images from Docker Hub (or quay.io if you are using Enterprise Edition), copy your AMPs to the containers, then use Docker Compose to start up several containers.</p>
+</li>
+</ol>
+<p>Now open your browser and point it to http://localhost:8180/share. Log in using admin/admin and let’s see what’s different.</p>
+<p>What’s different is that the “is sub-type” dropdown in the rule configuration panel now has our custom types and the “has aspect” dropdown now has our custom aspects.</p>
+<p><img alt="Rule configuration with custom types" src="../images/type-check-hi.png" /></p>
+<p><img alt="Rule configuration with custom aspects" src="../images/has-aspect-hi.png" /></p>
+<p>The “change type” dropdown, in both the rule configuration and UI action, lists our custom types:</p>
+<p><img alt="Specialize type action with in rule config" src="../images/specialize-type-hi.png" /></p>
+<p><img alt="Manage types UI action with custom types" src="../images/change-type-before-i18n-hi.png" /></p>
+<p>And the “add aspect” list, in both the rule configuration and UI action, lists our custom aspects:</p>
+<p><img alt="Add aspect action with custom actions" src="../images/add-aspect-hi.png" /></p>
+<p><img alt="Manage aspects UI action with custom aspects" src="../images/aspects-before-i18n-hi.png" /></p>
+<p>You’ll notice that in the rule configuration the types and aspects are shown with their localized names while in the dialogs the strings are shown as not yet localized (their ID is displayed instead of their localized string). That’s because the strings for Share haven’t yet been localized and some services, like the rule configuration, will pull those strings from the content model XML. If it is annoying you, jump to the <a href="#localizing-strings-for-custom-content-models">localization</a> section and come back.</p>
+<h2 id="configuring-forms-for-custom-properties">Configuring Forms for Custom Properties<a class="headerlink" href="#configuring-forms-for-custom-properties" title="Permanent link">&para;</a></h2>
+<p>Try this: Create a piece of test content. Change its type to <code>sc:whitepaper</code> and add both of our custom aspects to it. Then, from the Document Library, click the "Edit Properties" link for that piece of test content. You'll see a form that looks something like this:</p>
+<p><img alt="Alfresco Share does not know how to display a form for the custom type" src="../images/unconfigured-form.png" /></p>
+<p>When you compare this to the pop-up that is displayed for an instance of <code>cm:content</code> you will see a big difference. The edit properties dialog for <code>sc:whitepaper</code> is a jumbled mess. The locale is showing up for some reason. The title field is halfway down the form, which has grown extremely long with all sorts of fields.</p>
+<p>What’s going on here is that Share is looking for a form configuration for <code>sc:whitepaper</code>. Finding none, it is just listing all of the properties of the object.</p>
+<p>Content properties can be edited two ways:</p>
+<ol>
+<li>Using the edit metadata popup dialog, which is what you get when you click “Edit Properties” from the document library page</li>
+<li>Using the default form, which is what you get when you click “Edit Properties” from the document details page.</li>
+</ol>
+<p>Clearly something prettier is needed for both the default form and the edit metadata form, so let’s fix that.</p>
+<h3 id="configuring-the-form-service-for-a-custom-type">Configuring the form service for a custom type<a class="headerlink" href="#configuring-the-form-service-for-a-custom-type" title="Permanent link">&para;</a></h3>
+<p>Alfresco Share uses the Form Service to decide which properties to show for a given form, how to lay out forms, and the control to use for each property. Let’s take a look at the out-of-the-box form configuration for <code>cm:content</code>. Because you've already launched Alfresco Share on your embedded Tomcat server, the exploded Share web application exists in your project's target directory. The out-of-the-box share-form-config.xml file resides in target/share-war/WEB-INF/classes/alfresco/share-form-config.xml.</p>
+<p>If you open that file and search for ‘condition=”cm:content”’ you’ll find two config elements that contain a total of six form configurations. One config element, identified by the <code>node-type</code> evaluator, is for forms dealing with existing nodes. The config element with the <code>model-type</code> evaluator is for forms used to create new nodes.</p>
+<p>Let’s focus on existing nodes for now. The three forms in that config element are:</p>
+<ul>
+<li>Default (<code>form</code> element with no <code>id</code> attribute). This is the form displayed when you open the document details.</li>
+<li>A form called <code>doclib-simple-metadata</code>. This is used when you edit properties from the document library.</li>
+<li>A form called <code>doclib-inline-edit</code>. This is used when you click the “Inline Edit” UI action.</li>
+</ul>
+<p>Suppose whitepapers need to have the same metadata displayed as instances of <code>cm:content</code>. To do that:</p>
+<ol>
+<li>Copy the entire config element and all of its children into share-config-custom.xml as a sibling of the Document Library config element you added to that file earlier.</li>
+<li>Then, change the condition from <code>cm:content</code> to <code>sc:whitepaper</code>.</li>
+</ol>
+<p>To test this change:</p>
+<ol>
+<li>Go to the terminal window currently tailing the logs of the running containers.</li>
+<li>Click ctrl+c to interrupt the tail.</li>
+<li>Re-build the AMPs by running <code>mvn install -DskipTests</code></li>
+<li>
+<p>Re-build and re-run the Share container using:</p>
+<div class="highlight"><pre><span></span><code>./run.sh reload_share
+</code></pre></div>
+</li>
+</ol>
+<p>Now when you log in to Alfresco Share, you’ll see that the property sets match for <code>sc:whitepaper</code> and <code>cm:content</code> across all forms, as shown below:</p>
+<p><img alt="Alfresco Share displays a form configured for the custom type" src="../images/configured-form.png" /></p>
+<p>Let's build on the form definition for <code>sc:whitepaper</code> to include properties and associations from the custom content model.</p>
+<h3 id="configuring-the-form-service-for-custom-properties">Configuring the form service for custom properties<a class="headerlink" href="#configuring-the-form-service-for-custom-properties" title="Permanent link">&para;</a></h3>
+<p>The document details for a whitepaper looks better, but the form isn’t showing the custom metadata. In this particular example, our model defines an association called <code>sc:relatedDocuments</code> which <code>sc:whitepaper</code> inherits from <code>sc:doc</code> and four properties across two custom aspects.</p>
+<p>For the properties defined in aspects, you have a choice. You can either add the properties to every form definition you want them to appear in. Or, you can add an aspect configuration so that they’ll automatically be displayed for any object that includes that aspect. The advantage of the former is that you can have fine-grained control over where those fields appear whereas if you choose the latter route, the form service will decide where to include your fields.</p>
+<p>This example takes the latter route. Edit the share-config-custom.xml file and add the following aspect configuration for <code>sc:webable</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;config</span><span class="w"> </span><span class="na">evaluator=</span><span class="s">&quot;aspect&quot;</span><span class="w"> </span><span class="na">condition=</span><span class="s">&quot;sc:webable&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;forms&gt;</span>
+<span class="w">        </span><span class="nt">&lt;form&gt;</span>
+<span class="w">            </span><span class="nt">&lt;field-visibility&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:published&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:isActive&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/field-visibility&gt;</span>
+<span class="w">            </span><span class="nt">&lt;appearance&gt;</span><span class="w">                    </span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:published&quot;</span><span class="w"> </span><span class="na">label-id=</span><span class="s">&quot;prop.sc_published&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:isActive&quot;</span><span class="w"> </span><span class="na">label-id=</span><span class="s">&quot;prop.sc_isActive&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/appearance&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/form&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/forms&gt;</span>
+<span class="nt">&lt;/config&gt;</span>
+</code></pre></div>
+<p>You can add the aspect configuration for <code>sc:productRelated</code> following the same pattern.</p>
+<p>Notice that there are two elements you have to worry about—the <code>field-visibility</code> element defines which properties are on the form while the <code>appearance</code> element defines how those properties are rendered. In this example I’m showing only a <code>label-id</code>, but there are a lot of options here. For example, if you wanted to override the component used to display the property, this is where you’d do it.</p>
+<p>Let’s take care of the <code>sc:relatedDocuments</code> association. It’s not defined in an aspect, so it is added directly to the form configuration for <code>sc:whitepaper</code>. It probably makes sense for the related documents property to be shown on both the default form and the edit metadata popup dialog. To do that, you’re going to modify the default form configuration element for <code>sc:whitepaper</code> that you created earlier. First add a <code>show</code> element just before the closing <code>field-visibility</code> tag:</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="cm">&lt;!-- surf:widget aspect --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;surf:widgetType&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;surf:mid&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;surf:label&quot;</span><span class="nt">/&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- sc:doc --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:relatedDocuments&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/field-visibility&gt;</span>
+</code></pre></div>
+<p>Then, add a new <code>field</code> element just before the closing <code>appearance</code> tag:</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:addressees&quot;</span><span class="w"> </span><span class="na">read-only=</span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:sentdate&quot;</span><span class="w"> </span><span class="na">read-only=</span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:subjectline&quot;</span><span class="w"> </span><span class="na">read-only=</span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:relatedDocuments&quot;</span><span class="w"> </span><span class="na">label-id=</span><span class="s">&quot;assoc.sc_relatedDocuments&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/appearance&gt;</span>
+</code></pre></div>
+<p>Now do the same thing for the <code>doclib-simple-metadata</code> form.</p>
+<p>To see your changes, re-build the AMPs using <code>mvn install -DskipTests</code> then re-build and re-run the Share container using <code>./run.sh reload_share</code>. You should see all four custom properties and the related documents association in the document details page, like this:</p>
+<p><img alt="Custom properties now show up in document details" src="../images/configured-doc-details.png" /></p>
+<p>Similarly, when you click "Edit Properties" from the document details page you should see the association and the properties:</p>
+<p><img alt="Custom properties now show up in edit properties" src="../images/configured-edit-props.png" /></p>
+<p>On the edit metadata pop-up dialog you should see the related documents association, like this:</p>
+<p><img alt="Custom properties now show up in document details" src="../images/configured-popup.png" /></p>
+<p>Now let's turn our attention to search.</p>
+<h3 id="configuring-advanced-search-in-alfresco-share">Configuring Advanced Search in Alfresco Share<a class="headerlink" href="#configuring-advanced-search-in-alfresco-share" title="Permanent link">&para;</a></h3>
+<p>The advanced search form in Alfresco Share allows end-users to first select what they are looking for and then specify both full-text and specific property values to search for depending on the content type selected. Out-of-the-box, the search form includes two types: <code>cm:content</code> and <code>cm:folder</code>.</p>
+<p>Users need to be able to search specifically for SomeCo Whitepapers, so the first step is to add the <code>sc:whitepaper</code> type to the list. Like the other Share form configuration covered thus far, the configuration goes in share-config-custom.xml. In this case, the condition is <code>AdvancedSearch</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;config</span><span class="w"> </span><span class="na">replace=</span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="na">evaluator=</span><span class="s">&quot;string-compare&quot;</span><span class="w"> </span><span class="na">condition=</span><span class="s">&quot;AdvancedSearch&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;advanced-search&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Forms for the advanced search type list --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;forms&gt;</span>
+<span class="w">            </span><span class="nt">&lt;form</span><span class="w"> </span><span class="na">labelId=</span><span class="s">&quot;search.form.label.cm_content&quot;</span><span class="w"> </span><span class="na">descriptionId=</span><span class="s">&quot;search.form.desc.cm_content&quot;</span><span class="nt">&gt;</span>cm:content<span class="nt">&lt;/form&gt;</span>
+<span class="w">            </span><span class="nt">&lt;form</span><span class="w"> </span><span class="na">labelId=</span><span class="s">&quot;search.form.label.cm_folder&quot;</span><span class="w"> </span><span class="na">descriptionId=</span><span class="s">&quot;search.form.desc.cm_folder&quot;</span><span class="nt">&gt;</span>cm:folder<span class="nt">&lt;/form&gt;</span><span class="w">            </span>
+<span class="w">            </span><span class="nt">&lt;form</span><span class="w"> </span><span class="na">labelId=</span><span class="s">&quot;type.sc_whitepaper&quot;</span><span class="w"> </span><span class="na">descriptionId=</span><span class="s">&quot;search.form.desc.sc_whitepaper&quot;</span><span class="nt">&gt;</span>sc:whitepaper<span class="nt">&lt;/form&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/forms&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/advanced-search&gt;</span>
+<span class="nt">&lt;/config&gt;</span>
+</code></pre></div>
+<p>Notice that the list of advanced search forms replaces the out-of-the-box list. If the list only had <code>sc:whitepaper</code> and left out <code>cm:content</code> and <code>cm:folder</code>, Share users would not be able to search for plain content or folders.</p>
+<p>The next step is to tell Share which form to use when a given type is selected. Recall earlier that there are two sets of form configuration—one for existing nodes (evaluator of <code>node-type</code>) and one for new nodes (evaluator of <code>model-type</code>). Search forms go in the <code>model-type</code> evaluator.</p>
+<p>The search form for whitepapers should be the same as the one for plain content, but should include the four properties defined in the custom aspects. The easiest way to do this is to copy the <code>cm:content</code> search form from the out-of-the-box form configuration into share-config-custom.xml and then modify it to suit our needs. The code listing below shows this:</p>
+<div class="highlight"><pre><span></span><code><span class="cm">&lt;!-- sc:whitepaper type (new nodes) --&gt;</span>
+<span class="nt">&lt;config</span><span class="w"> </span><span class="na">evaluator=</span><span class="s">&quot;model-type&quot;</span><span class="w"> </span><span class="na">condition=</span><span class="s">&quot;sc:whitepaper&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;forms&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- Search form --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;form</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;search&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;field-visibility&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:name&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:title&quot;</span><span class="w"> </span><span class="na">force=</span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:description&quot;</span><span class="w"> </span><span class="na">force=</span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;mimetype&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:modified&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:modifier&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="cm">&lt;!-- sc:productRelated --&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:product&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:version&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="cm">&lt;!-- sc:webable --&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:isActive&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;show</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:published&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/field-visibility&gt;</span>
+<span class="w">            </span><span class="nt">&lt;appearance&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;mimetype&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;control</span><span class="w"> </span><span class="na">template=</span><span class="s">&quot;/org/alfresco/components/form/controls/mimetype.ftl&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/field&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:modifier&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;control&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;control-param</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;forceEditable&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/control-param&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/control&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/field&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cm:modified&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;control</span><span class="w"> </span><span class="na">template=</span><span class="s">&quot;/org/alfresco/components/form/controls/daterange.ftl&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/field&gt;</span>
+<span class="w">                </span><span class="cm">&lt;!-- sc:productRelated --&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:product&quot;</span><span class="w"> </span><span class="na">label-id=</span><span class="s">&quot;prop.sc_product&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;control</span><span class="w"> </span><span class="na">template=</span><span class="s">&quot;/org/alfresco/components/form/controls/textfield.ftl&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/field&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:version&quot;</span><span class="w"> </span><span class="na">label-id=</span><span class="s">&quot;prop.sc_version&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;control</span><span class="w"> </span><span class="na">template=</span><span class="s">&quot;/org/alfresco/components/form/controls/textfield.ftl&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/field&gt;</span><span class="w">               </span>
+<span class="w">                </span><span class="cm">&lt;!-- sc:webable --&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:isActive&quot;</span><span class="w"> </span><span class="na">label-id=</span><span class="s">&quot;prop.sc_isActive&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;control</span><span class="w"> </span><span class="na">template=</span><span class="s">&quot;/org/alfresco/components/form/controls/checkbox.ftl&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/field&gt;</span>
+<span class="w">                </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;sc:published&quot;</span><span class="w"> </span><span class="na">label-id=</span><span class="s">&quot;prop.sc_published&quot;</span><span class="nt">&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;control</span><span class="w"> </span><span class="na">template=</span><span class="s">&quot;/org/alfresco/components/form/controls/daterange.ftl&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/field&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/appearance&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/form&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/forms&gt;</span>
+<span class="nt">&lt;/config&gt;</span>
+</code></pre></div>
+<p>It is important to note that the field elements in the appearance section require the form control to be specified. If it is not specified, the field will not show up on the search form.</p>
+<p>After re-building the AMP and reloading the Share container, the SomeCo Whitepaper type is included in the advanced search dropdown, and four fields for the aspect properties are shown in the search form.</p>
+<p><img alt="Search by Type" src="../images/adv-search-type.png" /></p>
+<p><img alt="Search custom properties" src="../images/adv-search-props.png" /></p>
+<h2 id="localizing-strings-for-custom-content-models">Localizing Strings for Custom Content Models<a class="headerlink" href="#localizing-strings-for-custom-content-models" title="Permanent link">&para;</a></h2>
+<p>We’ve put off localizing the form labels until now. To fix this, first create a messages bundle, then register it with a Spring bean. Here are the steps:</p>
+<ol>
+<li>Create a new folder called "messages" in $TUTORIAL_HOME/content-tutorial-share/src/main/resources/alfresco/web-extension. If the folder is already there, delete any files that may already be present.</li>
+<li>
+<p>In the messages folder, create a new file called "scModel.properties" with the following content:</p>
+<div class="highlight"><pre><span></span><code>#sc:doc
+type.sc_doc=SomeCo Doc
+assoc.sc_relatedDocuments=Related Documents
+
+#sc:whitepaper
+type.sc_whitepaper=SomeCo Whitepaper
+search.form.desc.sc_whitepaper=Search for SomeCo Whitepapers
+
+#sc:webable
+aspect.sc_webable=SomeCo Webable
+prop.sc_published=Published
+prop.sc_isActive=Active?
+
+#sc:productRelated
+aspect.sc_productRelated=SomeCo Product Related
+prop.sc_product=Product
+prop.sc_version=Version
+</code></pre></div>
+</li>
+<li>
+<p>We need to register this properties bundle with Spring. Share does not look in module directories for Spring context files. Instead, it uses the web-extension folder. That folder already exists in $TUTORIAL_HOME/content-tutorial-share/src/main/resources/alfresco.</p>
+</li>
+<li>In the web-extension folder, create a new file called "content-tutorial-share-context.xml". I am using the <code>artifactId</code> as part of the file name because this file will ultimately end up in a folder that may contain other Spring configuration files and I don't want this one to collide with any of those. If the SDK already placed a similar file in the folder, it is okay to use it instead, just clear out the contents of the file.</li>
+<li>
+<p>Add the following content to the file, then save:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;&lt;!DOCTYPE beans PUBLIC &#39;-//SPRING//DTD BEAN//EN&#39; &#39;http://www.springframework.org/dtd/spring-beans.dtd&#39;&gt;</span>
+
+<span class="nt">&lt;beans&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!-- Add Someco messages --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;bean</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;com.someco.content-tutorial-share.resources&quot;</span><span class="w"> </span><span class="na">class=</span><span class="s">&quot;org.springframework.extensions.surf.util.ResourceBundleBootstrapComponent&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;resourceBundles&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;list&gt;</span>
+<span class="w">                </span><span class="nt">&lt;value&gt;</span>alfresco.web-extension.messages.scModel<span class="nt">&lt;/value&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/list&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/property&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div>
+</li>
+</ol>
+<p>Now re-build the AMPs and reload the Share container and you should see that the types, aspects, and properties have the localized labels.</p>
+<h2 id="share-configuration-summary">Share Configuration Summary<a class="headerlink" href="#share-configuration-summary" title="Permanent link">&para;</a></h2>
+<p>You’ve seen that configuring Alfresco Share for your custom content model essentially involves adding XML to the share-config-custom.xml file and creating a properties file for your localized strings. All of this lives in a project created by the Alfresco Maven SDK and is packaged and deployed as an AMP.</p>
+<p>There are other things you might like to do to the Share user interface, but these are beyond the scope of this document:</p>
+<ul>
+<li>Add custom content types to the Create menu</li>
+<li>Add custom properties to the document library sort criteria</li>
+<li>Add custom properties to the document library data grid</li>
+</ul>
+<p>Now let’s turn our attention from the front-end to the back-end to understand how to create, query, update, and delete content using code running remotely from the Alfresco server.</p>
+<h1 id="part-3-working-with-content-programmatically">Part 3: Working with Content Programmatically<a class="headerlink" href="#part-3-working-with-content-programmatically" title="Permanent link">&para;</a></h1>
+<p>So far we've created a custom model and we've configured Alfresco Share to let end users work with the types, aspects, and properties defined in the custom model. For simple document management solutions, this may be enough. Often, code will also required. It could be code in a web application that needs to work with the repository, code that implements custom behavior for custom content types, or code that implements Alfresco web client customizations.</p>
+<p>There are several API's available depending on what you want to do. The table below outlines the choices:</p>
+<table>
+<thead>
+<tr>
+<th>Solution type</th>
+<th>Language</th>
+<th>Alfresco API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alfresco Share user interface customizations</td>
+<td>Freemarker Templating Language, Java/JSP, JavaScript</td>
+<td>Alfresco Freemarker API, Alfresco JavaScript API</td>
+</tr>
+<tr>
+<td>Custom applications with an embedded Alfresco repository (Repository runs in the same process as the application)</td>
+<td>Java</td>
+<td>Alfresco Foundation API</td>
+</tr>
+<tr>
+<td>Custom applications using a remote Alfresco repository</td>
+<td>Java, Python, PHP, .NET, or any language that can make calls via HTTP</td>
+<td>CMIS, Web Scripts, REST API</td>
+</tr>
+</tbody>
+</table>
+<p>Table: Alfresco API Options</p>
+<p>The best way to make remote calls to the Alfresco repository is to leverage Alfresco’s support for the Content Management Interoperability Services (CMIS) <a href="https://www.oasis-open.org/committees/cmis">standard</a>. So let’s look at CMIS examples for creating, updating, querying, and deleting content. The client API’s available from the <a href="http://chemistry.apache.org">Apache Chemistry</a> project offer a variety of languages to choose from. This tutorial focuses on Java.</p>
+<p>If you need to learn how to make these other styles of customizations, consult <a href="https://ecmarchitect.com">ecmarchitect.com</a> and the <a href="http://docs.alfresco.com">Alfresco Documentation</a>.</p>
+<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
+<p>Let's run through some examples that leverage OpenCMIS to work with instances of the custom types defined in the model. To facilitate this, I'm going to create a new Maven project as a sibling to the content-tutorial project. Because the new project doesn't produce AMPs it does not make sense to use the Alfresco Maven SDK to create it.</p>
+<p>To create the CMIS project, do this:</p>
+<ol>
+<li>Create a new project called "content-tutorial-cmis".</li>
+<li>Create a source directory called "java" in "src/main".</li>
+<li>If you are using Eclipse, convert the project to a Maven project using Configure, Convert to Maven Project. This will create a default pom.xml in the root of your project folder. I am using "com.someco" for the <code>groupId</code> and "content-tutorial-cmis" for the <code>artifactId</code>.</li>
+<li>Edit the pom.xml file that belongs to "content-tutorial-cmis".</li>
+<li>
+<p>This project uses the OpenCMIS library from Apache Chemistry and the content-tutorial project, so add those as dependencies:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>org.apache.chemistry.opencmis<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>chemistry-opencmis-client-impl<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>1.1.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>com.someco<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>content-tutorial<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+</li>
+</ol>
+<p>The content-tutorial-cmis project depends on some constants that are related to our custom content model, so those make sense to be defined in the content-tutorial project within the content-tutorial-platform module. For this tutorial, all we need is the com.someco.model.SomeCoModel.java class which contains constants that map to the custom content model. These constants are used for convenience by Java classes that need to know things like namespaces, names of content types, etc. If you are building your own project just copy it from the source.</p>
+<h2 id="cmis-10-and-the-alfresco-opencmis-extension-library">CMIS 1.0 and the Alfresco OpenCMIS Extension Library<a class="headerlink" href="#cmis-10-and-the-alfresco-opencmis-extension-library" title="Permanent link">&para;</a></h2>
+<p>Alfresco offers support for both CMIS 1.0 and CMIS 1.1. Unless you have a good reason to stick with the old version, you should be hitting the CMIS 1.1 end points. If you are using CMIS 1.1, skip this section and go on to "Start Your Repository".</p>
+<p>If you are using CMIS 1.0, you may want to use an additional library called the Alfresco OpenCMIS Extension. It was created to make it easier to work with aspects before native support for aspects was added to CMIS 1.1. If you need to work with CMIS 1.0 for some reason, add the following to the CMIS project pom.xml:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>org.alfresco.cmis.client<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>alfresco-opencmis-extension<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+<p>As well as the repository where the OpenCMIS Extension Library resides:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;repositories&gt;</span>
+<span class="w">    </span><span class="nt">&lt;repository&gt;</span>
+<span class="w">        </span><span class="nt">&lt;id&gt;</span>artifacts.alfresco.com<span class="nt">&lt;/id&gt;</span>
+<span class="w">        </span><span class="nt">&lt;name&gt;</span>Alfresco<span class="w"> </span>Maven<span class="w"> </span>Repository<span class="nt">&lt;/name&gt;</span>
+<span class="w">        </span><span class="nt">&lt;url&gt;</span>https://artifacts.alfresco.com/nexus/content/groups/public/<span class="nt">&lt;/url&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/repository&gt;</span>
+<span class="nt">&lt;/repositories&gt;</span>
+</code></pre></div>
+<h2 id="start-your-repository">Start Your Repository<a class="headerlink" href="#start-your-repository" title="Permanent link">&para;</a></h2>
+<p>To run the examples in Part 3 you need to have an Alfresco repository running with the repo tier AMP you created in Part 1. Using the <code>/run.sh build_start</code> script to fire up your SDK-created Docker containers as shown in that part of the tutorial works fine. If it isn't running already, go ahead and start it up.</p>
+<p>Now you are ready to write some code.</p>
+<h2 id="creating-content-with-opencmis">Creating Content with OpenCMIS<a class="headerlink" href="#creating-content-with-opencmis" title="Permanent link">&para;</a></h2>
+<p>The goal here is to create a runnable class called <code>SomeCoCMISDataCreator</code> that accepts arguments for the username, password, folder in which to create the content, type of content we're creating, and a name for the new content. I've left out the main method as well as the code that establishes the session, but you can see the full class <a href="https://github.com/jpotts/alfresco-developer-series/blob/master/content/content-tutorial-cmis/src/main/java/com/someco/cmis/examples/SomeCoCMISDataCreator.java">here</a>.</p>
+<p>The first thing the code does is grab a session. The <code>getSession()</code> method is inherited from a class called <a href="https://github.com/jpotts/alfresco-developer-series/blob/master/content/content-tutorial-cmis/src/main/java/com/someco/cmis/examples/CMISExampleBase.java">CMISExampleBase</a> which is used for all of the CMIS examples in this document. The important thing to know about that method is that it uses the value of <code>serviceUrl</code> to know how to connect to your Alfresco server. The URL currently specified is the one to use when connecting to a 5.x server running on localhost using the AtomPub binding. The URL is:</p>
+<div class="highlight"><pre><span></span><code>http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+</code></pre></div>
+<p>A common mistake is to use an old CMIS service URL, so make sure you are using the correct one according to the version of Alfresco you are using.</p>
+<p>Once the code has a session, it gets a reference to the folder where the content will be created. The timestamp is incorporated into the content name so that if the code is run multiple times, the object names will be unique.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Session</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getSession</span><span class="p">();</span>
+
+<span class="c1">// Grab a reference to the folder where we want to create content</span>
+<span class="n">Folder</span><span class="w"> </span><span class="n">folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Folder</span><span class="p">)</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">getObjectByPath</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">getFolderName</span><span class="p">());</span>
+
+<span class="n">String</span><span class="w"> </span><span class="n">timeStamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Long</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">()).</span><span class="na">toString</span><span class="p">();</span>
+<span class="n">String</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getContentName</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; (&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">timeStamp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">;</span>
+</code></pre></div>
+<p>Next, the code sets up the properties that will be set on the new document. It creates a <code>Map</code> of <code>Strings</code> and <code>Objects</code> to hold the property names and values.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Create a Map of objects with the props we want to set</span>
+<span class="n">Map</span><span class="w"> </span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">PropertyIds</span><span class="p">.</span><span class="na">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">);</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">PropertyIds</span><span class="p">.</span><span class="na">OBJECT_TYPE_ID</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;D:sc:whitepaper&quot;</span><span class="p">);</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">PropertyIds</span><span class="p">.</span><span class="na">SECONDARY_OBJECT_TYPE_IDS</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Arrays</span><span class="p">.</span><span class="na">asList</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;P:sc:webable&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;P:sc:productRelated&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;P:cm:generalclassifiable&quot;</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">);</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&quot;sc:isActive&quot;</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+<span class="n">GregorianCalendar</span><span class="w"> </span><span class="n">publishDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GregorianCalendar</span><span class="p">(</span><span class="mi">2007</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&quot;sc:published&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">publishDate</span><span class="p">);</span>
+</code></pre></div>
+<p>Notice that the base type is being set with the OBJECT_TYPE_ID property. The aspects are being set with the SECONDARY_OBJECT_TYPE_IDS property, which accepts a list of aspect IDs.</p>
+<p>It is also important to point out that, in CMIS, document types begin with “D:” while policy types begin with “P:”. (The 'P' stands for "Policy". CMIS 1.0 didn’t have a native concept of aspects, and as a workaround, aspects were referred to using a CMIS concept called a “Policy”).</p>
+<p>The next step is to prepare the content that will be set on the new object. This is a matter of calling the <code>createContentStream()</code> method on the <code>ObjectFactory</code> with the file name, length, mimetype, and an <code>InputStream</code> based on the content.</p>
+<div class="highlight"><pre><span></span><code><span class="n">String</span><span class="w"> </span><span class="n">docText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;This is a sample &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">getContentType</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; document called &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">       </span><span class="n">getContentName</span><span class="p">();</span>
+<span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">docText</span><span class="p">.</span><span class="na">getBytes</span><span class="p">();</span>
+<span class="n">InputStream</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ByteArrayInputStream</span><span class="p">(</span><span class="n">content</span><span class="p">);</span>
+<span class="n">ContentStream</span><span class="w"> </span><span class="n">contentStream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">getObjectFactory</span><span class="p">().</span>
+<span class="w">    </span><span class="n">createContentStream</span><span class="p">(</span>
+<span class="w">        </span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">content</span><span class="p">.</span><span class="na">length</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;text/plain&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span>
+<span class="w">    </span><span class="p">);</span>
+</code></pre></div>
+<p>Finally, the code tells the folder to create a new document and passes in the properties, content stream, and versioning state, then dumps the length of the content that was created.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Document</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">folder</span><span class="p">.</span><span class="na">createDocument</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span><span class="w"> </span><span class="n">contentStream</span><span class="p">,</span>
+<span class="w">     </span><span class="n">VersioningState</span><span class="p">.</span><span class="na">MAJOR</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Content Length: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">doc</span><span class="p">.</span><span class="na">getContentStreamLength</span><span class="p">());</span>
+</code></pre></div>
+<p>If you are in an IDE like Eclipse, you should be able to set the arguments and run this class easily. If you want to do it from the command line, you can run it via Maven so that it will set up the classpath for you. To do that you would run:</p>
+<div class="highlight"><pre><span></span><code>mvn exec:java \
+-Dexec.mainClass=&quot;com.someco.cmis.examples.SomeCoCMISDataCreator&quot; \
+-Dexec.args=&quot;admin admin SomeCo whitepaper test&quot;
+</code></pre></div>
+<p>Running <code>SomeCoCMISDataCreator.class</code> produces:</p>
+<div class="highlight"><pre><span></span><code>Created: dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0
+Content Length: 59
+</code></pre></div>
+<p>If you are following along, you might want to run it a few times to have some test content to play with.</p>
+<h2 id="creating-associations-with-opencmis">Creating Associations with OpenCMIS<a class="headerlink" href="#creating-associations-with-opencmis" title="Permanent link">&para;</a></h2>
+<p>Now let's look at a class that creates a “related documents” association between two documents.</p>
+<p>The <a href="https://github.com/jpotts/alfresco-developer-series/blob/master/content/content-tutorial-cmis/src/main/java/com/someco/cmis/examples/SomeCoCMISDataRelater.java">SomeCoCMISDataRelater</a> class accepts a source object ID and a target object ID as arguments. The code creates a map of properties containing the association type, source ID, and target ID. Note that the association type is preceded by “R:”, which stands for "relationship", when working with CMIS.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Session</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getSession</span><span class="p">();</span>
+
+<span class="c1">// Create a Map of objects with the props we want to set</span>
+<span class="n">Map</span><span class="w"> </span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">PropertyIds</span><span class="p">.</span><span class="na">OBJECT_TYPE_ID</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;R:sc:relatedDocuments&quot;</span><span class="p">);</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">PropertyIds</span><span class="p">.</span><span class="na">SOURCE_ID</span><span class="p">,</span><span class="w"> </span><span class="n">getSourceObjectId</span><span class="p">());</span>
+<span class="n">properties</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">PropertyIds</span><span class="p">.</span><span class="na">TARGET_ID</span><span class="p">,</span><span class="w"> </span><span class="n">getTargetObjectId</span><span class="p">());</span>
+<span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">session</span><span class="p">.</span><span class="na">createRelationship</span><span class="p">(</span><span class="n">properties</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Oops, something unexpected happened. Maybe the rel already exists?&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The last half of the method dumps the associations of the source object. The trick here is that when you make the <code>getObject()</code> call to instantiate the object, you will not get back the relationships by default. The <code>OperationContext</code> that is being instantiated makes sure that happens.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Dump the object&#39;s associations</span>
+<span class="n">OperationContext</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OperationContextImpl</span><span class="p">();</span>
+<span class="n">oc</span><span class="p">.</span><span class="na">setIncludeRelationships</span><span class="p">(</span><span class="n">IncludeRelationships</span><span class="p">.</span><span class="na">SOURCE</span><span class="p">);</span>
+<span class="n">Document</span><span class="w"> </span><span class="n">sourceDoc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Document</span><span class="p">)</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">getObject</span><span class="p">(</span>
+<span class="w">              </span><span class="n">session</span><span class="p">.</span><span class="na">createObjectId</span><span class="p">(</span><span class="n">getSourceObjectId</span><span class="p">()),</span>
+<span class="w">              </span><span class="n">oc</span><span class="p">);</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Relationship</span><span class="o">&gt;</span><span class="w"> </span><span class="n">relList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sourceDoc</span><span class="p">.</span><span class="na">getRelationships</span><span class="p">();</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Associations of objectId:&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">getSourceObjectId</span><span class="p">());</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Relationship</span><span class="w"> </span><span class="n">rel</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">relList</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;    &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rel</span><span class="p">.</span><span class="na">getTarget</span><span class="p">().</span><span class="na">getId</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The last line calls a method that queries the associations for a given reference. This should dump the association that was just created plus any other associations that have been created for this object.</p>
+<p>If you want to run this on your own using Maven, it would look something like this, with your own values for the source and target object ID’s:</p>
+<div class="highlight"><pre><span></span><code>mvn exec:java \
+-Dexec.mainClass=&quot;com.someco.cmis.examples.SomeCoCMISDataRelater&quot; \
+-Dexec.args=&quot;admin admin SomeCo whitepaper test dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0 bfd4b553-ff58-4d6e-a71b-00a470bd86c9;1.0&quot;
+</code></pre></div>
+<p>Running the Java snippet as above, assuming no other relationships exist on the source object produces:</p>
+<div class="highlight"><pre><span></span><code>Associations of objectId: dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0
+    bfd4b553-ff58-4d6e-a71b-00a470bd86c9;1.0
+</code></pre></div>
+<p>Now you can use the Alfresco Share client to view the associations as shown below:</p>
+<p><img alt="CMIS created the related documents association shown here" src="../images/cmis-assocs.png" /></p>
+<p>Remember the share-config-custom.xml file? It says that any time the default form or edit metadata form is used for <code>sc:whitepaper</code> objects, the <code>sc:relatedDocuments</code> associations should be shown. Alternatively, the Node Browser, available in the Alfresco Share Administration Console, is a handy way to view associations.</p>
+<h2 id="searching-for-content-with-opencmis">Searching for Content with OpenCMIS<a class="headerlink" href="#searching-for-content-with-opencmis" title="Permanent link">&para;</a></h2>
+<p>Now that there are some instances of SomeCo’s custom types in the repository it is time to write code that will query for those.</p>
+<p>Content in the repository is automatically indexed by Alfresco, including properties in your custom content model. You can execute searches to find content based on full-text, property values, content types, and folder paths.</p>
+<p>There are a number of supported search dialects. If you are writing code against an Alfresco repository that is 3.4 or higher, you should use either Alfresco FTS or CMIS Query Language, if at all possible. This part of the tutorial is focused on CMIS, so let's write some CMIS Query Language queries.</p>
+<p>Just like the content creation code, the <a href="https://github.com/jpotts/alfresco-developer-series/blob/master/content/content-tutorial-cmis/src/main/java/com/someco/cmis/examples/SomeCoCMISDataQueries.java">SomeCoCMISDataQueries</a> class will be a runnable Java application that accepts the username, password, and folder name as arguments. It includes a generic method used to execute a query which is called repeatedly with multiple query examples.</p>
+<p>If you are following along, you should either run the content creation code a few times or create some content manually so you can test out the queries more thoroughly.</p>
+<p>Let's take a look at the generic query execution method first, then the method that calls it for each example query string.</p>
+<p>The <code>getQueryResults()</code> method is pretty straightforward. It returns a list of <code>CmisObject</code> objects. It instantiates those objects by iterating over the query results, grabbing the <code>objectId</code> from each result, and making a <code>getObject()</code> call on the <code>session</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">CmisObject</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getQueryResults</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">queryString</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">CmisObject</span><span class="o">&gt;</span><span class="w"> </span><span class="n">objList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">CmisObject</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">Session</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getSession</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// execute query</span>
+<span class="w">    </span><span class="n">ItemIterable</span><span class="o">&lt;</span><span class="n">QueryResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="n">queryString</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">QueryResult</span><span class="w"> </span><span class="n">qResult</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">PropertyData</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">propData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qResult</span><span class="p">.</span><span class="na">getPropertyById</span><span class="p">(</span><span class="s">&quot;cmis:objectId&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">objectId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">propData</span><span class="p">.</span><span class="na">getFirstValue</span><span class="p">();</span>
+<span class="w">        </span><span class="n">CmisObject</span><span class="w"> </span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">getObject</span><span class="p">(</span><span class="n">session</span><span class="p">.</span><span class="na">createObjectId</span><span class="p">(</span><span class="n">objectId</span><span class="p">));</span>
+<span class="w">        </span><span class="n">objList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">objList</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>The <code>doExamples()</code> method then executes a series of example queries and dumps the results. The first two queries are simple. One returns every instance of <code>sc:doc</code> including instances of types that inherit from <code>sc:doc</code>. The second one finds any objects residing in the folder passed in that contain the word “sample” anywhere in the content. Notice the SQL-like syntax of CMIS Query Language. It basically treats content types as if they were tables.</p>
+<div class="highlight"><pre><span></span><code><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">RESULT_SEP</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Finding content of type:&quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">     </span><span class="n">SomeCoModel</span><span class="p">.</span><span class="na">TYPE_SC_DOC</span><span class="p">.</span><span class="na">toString</span><span class="p">());</span>
+<span class="n">queryString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select * from sc:doc&quot;</span><span class="p">;</span>
+<span class="n">dumpQueryResults</span><span class="p">(</span><span class="n">getQueryResults</span><span class="p">(</span><span class="n">queryString</span><span class="p">));</span>
+
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">RESULT_SEP</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Find content in the root folder with text like &#39;sample&#39;&quot;</span><span class="p">);</span>
+<span class="n">queryString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select * from cmis:document where contains(&#39;sample&#39;) and</span>
+<span class="s">     in_folder(&#39;&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">getFolderId</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;&#39;)&quot;</span><span class="p">;</span>
+<span class="n">dumpQueryResults</span><span class="p">(</span><span class="n">getQueryResults</span><span class="p">(</span><span class="n">queryString</span><span class="p">));</span>
+</code></pre></div>
+<p>You might have noticed the <code>getFolderId()</code> call. The <code>in_folder</code> predicate expects an object ID. So the <code>getFolderId()</code> method does a query to find the object ID of the folder that was passed in as an argument to the class. It would be nice if you could do this in a single query, but you can’t.</p>
+<h3 id="queries-on-aspect-based-properties">Queries on Aspect-based Properties<a class="headerlink" href="#queries-on-aspect-based-properties" title="Permanent link">&para;</a></h3>
+<p>The next query looks for active content. This is when it starts to get interesting because the property that tracks whether or not a piece of content is active, <code>sc:isActive</code>, is defined on an aspect. The CMIS specification allows for joins in queries. But Alfresco does not support joins except in the special case of aspects. In Alfresco CMIS, joins are used to relate a base type to one of its aspects. That allows you to use an aspect-based property in a where clause.</p>
+<div class="highlight"><pre><span></span><code><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">RESULT_SEP</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Find active content&quot;</span><span class="p">);</span>
+<span class="n">queryString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select d.*, w.* from cmis:document as d join sc:webable as w on</span>
+<span class="s">     d.cmis:objectId = w.cmis:objectId where w.sc:isActive = True&quot;</span><span class="p">;</span>
+<span class="n">dumpQueryResults</span><span class="p">(</span><span class="n">getQueryResults</span><span class="p">(</span><span class="n">queryString</span><span class="p">));</span>
+</code></pre></div>
+<h3 id="queries-across-multiple-aspects">Queries Across Multiple Aspects<a class="headerlink" href="#queries-across-multiple-aspects" title="Permanent link">&para;</a></h3>
+<p>The next query shows another special case. In this example the goal is to find the active content that has a product property set to a specific value. That’s a challenge because the <code>sc:isActive</code> property is defined by the <code>sc:webable</code> aspect while the <code>sc:product</code> property is defined by a different aspect, <code>sc:productRelated</code>. Unfortunately, there is no good way to get these results in a single query. The solution used here is to write a method called <code>getSubQueryResults()</code> that accepts two queries as arguments. The method runs the first query and then builds an <code>IN</code> predicate using the object IDs that come back, which it appends to the second query before invoking it.</p>
+<div class="highlight"><pre><span></span><code><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">RESULT_SEP</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Find active content with a product equal to &#39;SomePortal&#39;&quot;</span><span class="p">);</span>
+<span class="n">String</span><span class="w"> </span><span class="n">queryString1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select d.cmis:objectId from cmis:document as d join</span>
+<span class="s">    sc:productRelated as p on d.cmis:objectId = p.cmis:objectId &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;where p.sc:product = &#39;SomePortal&#39;&quot;</span><span class="p">;</span>
+<span class="n">String</span><span class="w"> </span><span class="n">queryString2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select d.cmis:objectId from cmis:document as d join</span>
+<span class="s">    sc:webable as w on d.cmis:objectId = w.cmis:objectId &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">     </span><span class="s">&quot;where w.sc:isActive = True&quot;</span><span class="p">;</span>
+<span class="n">dumpQueryResults</span><span class="p">(</span><span class="n">getSubQueryResults</span><span class="p">(</span><span class="n">queryString1</span><span class="p">,</span><span class="w"> </span><span class="n">queryString2</span><span class="p">));</span>
+</code></pre></div>
+<h3 id="queries-using-dates">Queries Using Dates<a class="headerlink" href="#queries-using-dates" title="Permanent link">&para;</a></h3>
+<p>The last query uses the aspect join trick to do a date range search on instances of <code>sc:whitepaper</code> published between a specific range.</p>
+<div class="highlight"><pre><span></span><code><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">RESULT_SEP</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Find content of type sc:whitepaper published between 1/1/2006</span>
+<span class="s">    and 6/1/2007&quot;</span><span class="p">);</span>
+<span class="n">queryString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select d.cmis:objectId, w.sc:published from sc:whitepaper as d join</span>
+<span class="s">    sc:webable as w on d.cmis:objectId = w.cmis:objectId &quot;</span><span class="w"> </span><span class="o">+</span><span class="w">  </span>
+<span class="w">    </span><span class="s">&quot;where w.sc:published &gt; TIMESTAMP &#39;2006-01-01T00:00:00.000-05:00&#39; &quot;</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="s">&quot;  and w.sc:published &lt; TIMESTAMP &#39;2007-06-02T00:00:00.000-05:00&#39;&quot;</span><span class="p">;</span>
+<span class="n">dumpQueryResults</span><span class="p">(</span><span class="n">getQueryResults</span><span class="p">(</span><span class="n">queryString</span><span class="p">));</span>
+</code></pre></div>
+<h3 id="running-the-queries">Running the Queries<a class="headerlink" href="#running-the-queries" title="Permanent link">&para;</a></h3>
+<p>If you want to compile and run this on your own machine, you can use one of the Ant tasks in the build.xml file included in the code that accompanies this article. Just type:</p>
+<div class="highlight"><pre><span></span><code>mvn exec:java \
+-Dexec.mainClass=&quot;com.someco.cmis.examples.SomeCoCMISDataQueries&quot; \
+-Dexec.args=&quot;admin admin SomeCo&quot;
+</code></pre></div>
+<p>Your results will vary based on how much content you've created and the values you've set in the content properties, but when I ran my test, the results were as shown below.</p>
+<div class="highlight"><pre><span></span><code>======================
+Finding content of type:doc
+----------------------
+Result 1:
+id:c7c1a94e-8d9c-4434-89b0-cbe14ef94455;1.0
+name:test1.txt
+created:Jan 22, 2014 2:22:00 PM
+----------------------
+Result 2:
+id:40ec2412-b1e6-4d86-af8b-4003adeeed46;1.0
+name:test (1390506931762)
+created:Jan 23, 2014 1:55:31 PM
+----------------------
+Result 3:
+id:c3e61b61-e5d4-4edf-a3e9-0eac61c693e8;1.0
+name:test (1390507967128)
+created:Jan 23, 2014 2:12:47 PM
+----------------------
+Result 4:
+id:bfd4b553-ff58-4d6e-a71b-00a470bd86c9;1.0
+name:test (1390508346539)
+created:Jan 23, 2014 2:19:06 PM
+----------------------
+Result 5:
+id:dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0
+name:test (1390508353662)
+created:Jan 23, 2014 2:19:13 PM
+======================
+Find content in the root folder with text like &#39;sample&#39;
+----------------------
+Result 1:
+id:40ec2412-b1e6-4d86-af8b-4003adeeed46;1.0
+name:test (1390506931762)
+created:Jan 23, 2014 1:55:31 PM
+----------------------
+Result 2:
+id:c3e61b61-e5d4-4edf-a3e9-0eac61c693e8;1.0
+name:test (1390507967128)
+created:Jan 23, 2014 2:12:47 PM
+----------------------
+Result 3:
+id:bfd4b553-ff58-4d6e-a71b-00a470bd86c9;1.0
+name:test (1390508346539)
+created:Jan 23, 2014 2:19:06 PM
+----------------------
+Result 4:
+id:dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0
+name:test (1390508353662)
+created:Jan 23, 2014 2:19:13 PM
+----------------------
+Result 5:
+id:4c9b0bda-ca90-4ad8-bf01-28ca6f9072bc;1.0
+name:test (1390508793841)
+created:Jan 23, 2014 2:26:33 PM
+======================
+Find active content
+----------------------
+Result 1:
+id:40ec2412-b1e6-4d86-af8b-4003adeeed46;1.0
+name:test (1390506931762)
+created:Jan 23, 2014 1:55:31 PM
+----------------------
+Result 2:
+id:c3e61b61-e5d4-4edf-a3e9-0eac61c693e8;1.0
+name:test (1390507967128)
+created:Jan 23, 2014 2:12:47 PM
+----------------------
+Result 3:
+id:bfd4b553-ff58-4d6e-a71b-00a470bd86c9;1.0
+name:test (1390508346539)
+created:Jan 23, 2014 2:19:06 PM
+----------------------
+Result 4:
+id:dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0
+name:test (1390508353662)
+created:Jan 23, 2014 2:19:13 PM
+----------------------
+Result 5:
+id:6d7de742-8604-4e50-8770-931ff81f9aa2;1.0
+name:dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0 (1390508459588)
+created:Jan 23, 2014 2:20:59 PM
+======================
+Find active content with a product equal to &#39;SomePortal&#39;
+----------------------
+Result 1:
+id:648660bb-2a0f-4ffc-9200-1aded09255c0;1.0
+name:test (1390508759315)
+created:Jan 23, 2014 2:25:59 PM
+======================
+Find content of type sc:whitepaper published between 1/1/2006 and 6/1/2007
+----------------------
+Result 1:
+id:40ec2412-b1e6-4d86-af8b-4003adeeed46;1.0
+name:test (1390506931762)
+created:Jan 23, 2014 1:55:31 PM
+----------------------
+Result 2:
+id:c3e61b61-e5d4-4edf-a3e9-0eac61c693e8;1.0
+name:test (1390507967128)
+created:Jan 23, 2014 2:12:47 PM
+----------------------
+Result 3:
+id:bfd4b553-ff58-4d6e-a71b-00a470bd86c9;1.0
+name:test (1390508346539)
+created:Jan 23, 2014 2:19:06 PM
+----------------------
+Result 4:
+id:dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0
+name:test (1390508353662)
+created:Jan 23, 2014 2:19:13 PM
+----------------------
+Result 5:
+id:6d7de742-8604-4e50-8770-931ff81f9aa2;1.0
+name:dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0 (1390508459588)
+created:Jan 23, 2014 2:20:59 PM
+</code></pre></div>
+<h2 id="deleting-content-with-opencmis">Deleting Content with OpenCMIS<a class="headerlink" href="#deleting-content-with-opencmis" title="Permanent link">&para;</a></h2>
+<p>Now it is time to clean up after ourselves by deleting content from the repository. The delete logic in the <a href="https://github.com/jpotts/alfresco-developer-series/blob/master/content/content-tutorial-cmis/src/main/java/com/someco/cmis/examples/SomeCoCMISDataCleaner.java">SomeCoCMISDataCleaner</a> class is similar to the search logic except that instead of dumping the results, the CmisObject’s <code>delete()</code> method gets called on every hit that is returned.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Session</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getSession</span><span class="p">();</span>
+
+<span class="c1">// execute query</span>
+<span class="n">String</span><span class="w"> </span><span class="n">queryString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;select * from sc:doc&quot;</span><span class="p">;</span>
+<span class="n">ItemIterable</span><span class="o">&lt;</span><span class="n">QueryResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="n">queryString</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+
+<span class="c1">// if we found some rows, create an array of DeleteCML objects      </span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">results</span><span class="p">.</span><span class="na">getTotalNumItems</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Found &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="na">getTotalNumItems</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; objects to delete.&quot;</span><span class="p">);</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">QueryResult</span><span class="w"> </span><span class="n">qResult</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">PropertyData</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">propData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qResult</span><span class="p">.</span><span class="na">getPropertyById</span><span class="p">(</span><span class="s">&quot;cmis:objectId&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">objectId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">propData</span><span class="p">.</span><span class="na">getFirstValue</span><span class="p">();</span>
+<span class="w">    </span><span class="n">CmisObject</span><span class="w"> </span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">getObject</span><span class="p">(</span><span class="n">session</span><span class="p">.</span><span class="na">createObjectId</span><span class="p">(</span><span class="n">objectId</span><span class="p">));</span>
+<span class="w">    </span><span class="n">obj</span><span class="p">.</span><span class="na">delete</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Deleted: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">objectId</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;Done!&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Note that this code deletes every object in the repository of type <code>sc:doc</code> and instances of child types. You would definitely want to “think twice and cut once” if you were running this code on a production repository, particularly if you were using a broad content type like <code>cm:content</code>.</p>
+<p>Similar to the other examples, you can compile and run this on the command line by executing the following:</p>
+<div class="highlight"><pre><span></span><code>mvn exec:java \
+-Dexec.mainClass=&quot;com.someco.cmis.examples.SomeCoCMISDataCleaner&quot; \
+-Dexec.args=&quot;admin admin SomeCo&quot;
+</code></pre></div>
+<p>Again, your results will vary based on the content you've created but in my repository, running the code results in the following:</p>
+<div class="highlight"><pre><span></span><code>Found 8 objects to delete.
+Deleted: 40ec2412-b1e6-4d86-af8b-4003adeeed46;1.0
+Deleted: c3e61b61-e5d4-4edf-a3e9-0eac61c693e8;1.0
+Deleted: bfd4b553-ff58-4d6e-a71b-00a470bd86c9;1.0
+Deleted: dbe2a709-5fd8-453e-9f9d-dff1e4c785d3;1.0
+Deleted: 6d7de742-8604-4e50-8770-931ff81f9aa2;1.0
+Deleted: 12e6f012-1831-4d2a-81f8-d130cd26e968;1.0
+Deleted: 4c9b0bda-ca90-4ad8-bf01-28ca6f9072bc;1.0
+Deleted: 648660bb-2a0f-4ffc-9200-1aded09255c0;1.0
+Done!
+</code></pre></div>
+<p>Now you know how to use CMIS, an industry-standard API, to create, relate, query, and delete objects in Alfresco. In fact, the code you've worked with here in Part 3 should work with any CMIS-compliant server (except for the aspect bits).</p>
+<p>The source code for this tutorial contains some additional CMIS examples that were not covered specifically, so you might want to take a look at those.</p>
+<h1 id="other-topics-to-explore-on-your-own">Other Topics to Explore on Your Own<a class="headerlink" href="#other-topics-to-explore-on-your-own" title="Permanent link">&para;</a></h1>
+<p>This tutorial has shown how to extend Alfresco's out-of-the-box content model with your own business-specific content types, how to expose those types, aspects, and properties in Alfresco Share, and how to work with content via OpenCMIS, the Java API for CMIS that is part of Apache Chemistry. I've thrown in a few recommendations that will hopefully save you some time or at least spark some discussion.</p>
+<p>There are many content model-related topics we didn't talk about that you can explore on your own, like:</p>
+<ul>
+<li>Controlling how your properties are indexed</li>
+<li>Using queries or services to populate constraints</li>
+<li>Creating custom form controls</li>
+<li>Hot-deploying content models</li>
+<li>Using a content modeling tool to create content models and forms through a user interface rather than XML</li>
+</ul>
+<h1 id="where-to-find-more-information">Where to Find More Information<a class="headerlink" href="#where-to-find-more-information" title="Permanent link">&para;</a></h1>
+<ul>
+<li>The complete source code for these examples is available on <a href="https://github.com/jpotts/alfresco-developer-series">GitHub</a>.</li>
+<li>Official documentation for both Enterprise Edition and Community Edition is available at <a href="http://docs.alfresco.com/">docs.alfresco.com</a>.</li>
+<li>The <a href="http://chemistry.apache.org/">Apache Chemistry Home Page</a> has examples and source code that works with CMIS.</li>
+<li>See <a href="https://ecmarchitect.com/archives/2009/11/23/1094">“Getting Started with CMIS”</a> on <a href="https://ecmarchitect.com">ecmarchitect.com</a> for a brief introduction to CMIS. The <a href="http://cmis.alfresco.com/">Alfresco CMIS</a> page is also a great resource. And there is now a <a href="http://www.manning.com/mueller/">CMIS book</a> availaible.</li>
+<li>If you are ready to cover new ground, try another <a href="https://ecmarchitect.com">ecmarchitect.com</a> tutorial in the <a href="https://ecmarchitect.com/alfresco-developer-series">Alfresco Developer Series</a>. The most logical next step is the <a href="https://ecmarchitect.com/alfresco-developer-series-tutorials/actions/tutorial/tutorial.html">Developing Custom Actions</a> tutorial.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.top", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
