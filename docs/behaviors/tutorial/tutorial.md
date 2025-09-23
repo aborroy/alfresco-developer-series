@@ -1,6 +1,7 @@
-% Implementing Custom Behaviors in Alfresco
-% Jeff Potts, [Metaversant Group](https://www.metaversant.com)
-% July, 2021
+# Implementing Custom Behaviors in Alfresco
+
+*Jeff Potts, [Metaversant Group](https://www.metaversant.com) — July, 2021*
+
 
 License
 =======

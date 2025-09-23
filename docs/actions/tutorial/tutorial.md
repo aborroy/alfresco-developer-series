@@ -1,6 +1,7 @@
-% Creating Custom Actions in Alfresco
-% Jeff Potts, [Metaversant Group](https://www.metaversant.com)
-% July, 2021
+# Creating Custom Actions in Alfresco
+
+*Jeff Potts, [Metaversant Group](https://www.metaversant.com) — July, 2021*
+
 
 License
 =======

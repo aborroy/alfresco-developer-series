@@ -76,3 +76,23 @@ behaviors/behavior-tutorial/behavior-tutorial-share-jar/.idea
 workflow/workflow-tutorial/workflow-tutorial-platform-jar/.idea
 workflow/workflow-tutorial/workflow-tutorial-platform-jar/alf_data_dev
 workflow/workflow-tutorial/workflow-tutorial-share-jar/.idea
+
+# MkDocs build
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.env
+
+# macOS
+.DS_Store
+__MACOSX/
+._*
+
+# Editors/IDE
+.vscode/
+.idea/
+

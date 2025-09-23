@@ -1,6 +1,7 @@
-% Working With Custom Content Types in Alfresco
-% Jeff Potts, [Metaversant Group](https://www.metaversant.com)
-% July, 2021
+# Working With Custom Content Types in Alfresco
+
+*Jeff Potts, [Metaversant Group](https://www.metaversant.com) — July, 2021*
+
 
 License
 =======

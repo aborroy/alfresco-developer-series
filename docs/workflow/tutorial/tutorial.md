@@ -1,6 +1,7 @@
-% Creating Custom Advanced Workflows in Alfresco
-% Jeff Potts, [Metaversant Group](https://www.ecmarchitect.com/)
-% July, 2021
+# Creating Custom Advanced Workflows in Alfresco
+
+*Jeff Potts, [Metaversant Group](https://www.ecmarchitect.com/) — July, 2021*
+
 
 License
 =======

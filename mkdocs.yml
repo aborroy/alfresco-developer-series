@@ -1,0 +1,31 @@
+site_name: Alfresco Developer Series
+site_description: Tutorials and best practices for Alfresco developers
+repo_url: https://github.com/aborroy/alfresco-developer-series
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - Maven SDK: maven-sdk/tutorial/tutorial.md
+      - Content Types & CMIS: content/tutorial/tutorial.md
+      - Actions: actions/tutorial/tutorial.md
+      - Behaviors: behaviors/tutorial/tutorial.md
+      - WebScripts: webscripts/tutorial/tutorial.md
+      - Workflows: workflow/tutorial/tutorial.md

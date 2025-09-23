@@ -1,6 +1,7 @@
-% Getting Started with the Alfresco Maven SDK
-% Jeff Potts, [Metaversant Group](https://www.metaversant.com)
-% July, 2021
+# Getting Started with the Alfresco Maven SDK
+
+*Jeff Potts, [Metaversant Group](https://www.metaversant.com) — July, 2021*
+
 
 License
 =======

@@ -1,6 +1,7 @@
-% Introduction to the Web Script Framework
-% Jeff Potts, [Metaversant Group](https://www.metaversant.com)
-% July, 2021
+# Introduction to the Web Script Framework
+
+*Jeff Potts, [Metaversant Group](https://www.metaversant.com) — July, 2021*
+
 
 License
 =======
