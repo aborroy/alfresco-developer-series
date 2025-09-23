@@ -1,6 +1,7 @@
-# Getting Started with the Alfresco Maven SDK
+# Getting Started with the Alfresco Maven SDK (Updated for 25.x)
 
-*Jeff Potts, [Metaversant Group](https://www.metaversant.com) — July, 2021*
+Adapted for the **Alfresco Community**, September 2025  
+Based on Jeff Potts *Alfresco Developer Series*.
 
 
 License

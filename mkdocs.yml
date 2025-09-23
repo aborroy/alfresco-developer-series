@@ -1,9 +1,11 @@
-site_name: Alfresco Developer Series
+site_name: Alfresco Developer Series (Community Edition)
 site_description: Tutorials and best practices for Alfresco developers
 repo_url: https://github.com/aborroy/alfresco-developer-series
 
 theme:
   name: material
+  logo: assets/alfresco-community.png
+  favicon: assets/favicon.png  
   features:
     - navigation.instant
     - navigation.sections
@@ -29,3 +31,9 @@ nav:
       - Behaviors: behaviors/tutorial/tutorial.md
       - WebScripts: webscripts/tutorial/tutorial.md
       - Workflows: workflow/tutorial/tutorial.md
+
+copyright: >
+  2025 Alfresco Community.  
+  Adapted from Jeff Potts “Alfresco Developer Series” (CC BY-SA 3.0).  
+  Changes were made. Original: https://ecmarchitect.com/alfresco-developer-series
+
