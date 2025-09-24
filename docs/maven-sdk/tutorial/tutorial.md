@@ -80,7 +80,6 @@ A JAR file is the standard Java packaging format, and in recent Alfresco version
 
 > **Best practice today** Use JAR deployment for most extensions, unless you specifically need AMP features like adding third party JAR dependencies.
 
-
 Alfresco Maven SDK
 ------------------
 
@@ -124,32 +123,33 @@ Maven SDK. It's time to see them in action.
 
 Your First Project
 ==================
+
 Let me show you how easy it can be to get started with Alfresco development
 using the Alfresco Maven SDK. Before I start I'm going to assume you have the
 following installed:
 
-* MacOS 11.4
-* Java OpenJDK 24.0.2
-* Apache Maven 3.9.9
+* MacOS
+* Java 21
+* Apache Maven 3.9
 * Alfresco Maven SDK 4.12 (No download necessary)
-* Docker 28.3.0
-* Docker Compose 2.38.1
+* Docker 28
+* Docker Compose 2.38
 
 You don't need to download anything else. Seriously. Not even Alfresco.
 
 Here are the steps:
 
 1. Create an empty directory. It doesn't matter where it is or what you call
-it. I'll refer to it as $TUTORIAL_HOME. We're going to be creating some
+it. I'll refer to it as `$TUTORIAL_HOME`. We're going to be creating some
 additional directories in here shortly.
 
 2. Now let's create a new project. For now, let's assume you want to create
 something that you will deploy to the Alfresco repository tier such as a custom
 content model, some custom rule actions, a new set of web scripts, or some
 Activiti business processes. It doesn't really matter. To create the new
-project, change directories to $TUTORIAL_HOME, then run this command:
+project, change directories to `$TUTORIAL_HOME`, then run this command:
 
-    ```   
+    ```bash
     mvn archetype:generate -Dfilter=org.alfresco:
     ```
 
@@ -157,18 +157,27 @@ project, change directories to $TUTORIAL_HOME, then run this command:
 You're basically selecting from a library of template projects. There are
 several available:
 
-        1: remote -> org.alfresco.maven.archetype:activiti-jar-archetype
-        2: remote -> org.alfresco.maven.archetype:alfresco-allinone-archetype
-        3: remote -> org.alfresco.maven.archetype:alfresco-amp-archetype
-        4: remote -> org.alfresco.maven.archetype:alfresco-platform-jar-archetype
-        5: remote -> org.alfresco.maven.archetype:alfresco-share-jar-archetype
-        6: remote -> org.alfresco.maven.archetype:share-amp-archetype
+    ```bash
+    1: remote -> org.alfresco.maven.archetype:activiti-jar-archetype (DEPRECATED)
+    2: remote -> org.alfresco.maven.archetype:alfresco-allinone-archetype
+    3: remote -> org.alfresco.maven.archetype:alfresco-amp-archetype
+    4: remote -> org.alfresco.maven.archetype:alfresco-platform-jar-archetype
+    5: remote -> org.alfresco.maven.archetype:alfresco-share-jar-archetype
+    6: remote -> org.alfresco.maven.archetype:share-amp-archetype
+    ```
 
-    Even though our goal is to create an AMP that can be deployed to Alfresco,
-    neither of the two options with "amp" in their names are what we want. Those
-    are for old versions of the SDK. Instead, we want to choose
-    "alfresco-allinone-archetype" so type the number that matches that archetype
-    (2 in this example) and hit enter.
+Each archetype creates a different type of Alfresco project:
+
+* `activiti-jar-archetype (DEPRECATED)`: Old template for building Activiti extensions. No longer used in current SDK versions.
+* `alfresco-allinone-archetype`: A complete project structure that includes both Repository and Share modules, plus configuration for packaging and running them together. Used in this tutorial and ideal when you need extensions spanning both sides of Alfresco.
+* `alfresco-amp-archetype`: Legacy AMP packaging format (pre-SDK 4). Not recommended for modern development.
+* `alfresco-platform-jar-archetype`: Creates an extension module for the Repository (backend) packaged as a JAR.
+* `alfresco-share-jar-archetype`: Creates an extension module for the Share application (frontend) packaged as a JAR.
+* `share-amp-archetype`: Legacy AMP packaging for Share extensions. Obsolete with the move to JAR packaging.
+
+Even though our final goal is to produce a JAR deployable to Alfresco, we choose `alfresco-allinone-archetype` here. The reason is that it provides a single project where both Repository and Share extensions are available side by side. This makes it easier to demonstrate how Alfresco extensions work in practice, without having to create and manage two separate projects.
+
+So in this case, type the number that corresponds to `alfresco-allinone-archetype` (2 in the example above) and hit Enter.
 
 4. If Maven asks you to specify the version of the archetype you want, choose
 4.12.
@@ -191,6 +200,18 @@ something you can specify "N" and then make changes or you can enter "Y" to
 continue. You can always change these values later if needed, so specify "Y"
 followed by enter.
 
+```bash
+Define value for property 'groupId': com.someco
+Define value for property 'artifactId': maven-sdk-tutorial
+Define value for property 'package' com.someco:
+Confirm properties configuration:
+version: 1.0-SNAPSHOT
+groupId: com.someco
+artifactId: maven-sdk-tutorial
+package: com.someco
+ Y:
+```
+
 Now Maven is going to do some work. When it is done you will have:
 
 * A project structure organized exactly how it needs to be to support your
@@ -203,8 +224,43 @@ testing
 * A default POM (Project Object Model) XML file that tells Maven what your
 project depends on
 
+```bash
+maven-sdk-tutorial
+├── docker                                 # Docker Compose setup for running the stack
+│   └── docker-compose.yml
+├── maven-sdk-tutorial-integration-tests   # Integration test project
+│   ├── pom.xml
+│   └── src
+│       ├── main/java                      # Test utilities
+│       └── test/java                      # Integration test cases
+├── maven-sdk-tutorial-platform            # Repository (backend) extension
+│   ├── pom.xml
+│   └── src
+│       ├── main/assembly                  # Packaging descriptors for AMP
+│       ├── main/java                      # Custom Java code
+│       ├── main/resources                 # Config/resources
+│       └── test/java                      # Unit tests
+├── maven-sdk-tutorial-platform-docker     # Docker image definition for Repository
+│   ├── pom.xml
+│   └── src/main/docker
+├── maven-sdk-tutorial-share                # Share (frontend) extension
+│   ├── pom.xml
+│   └── src
+│       ├── main/assembly                   # Packaging descriptors for AMP
+│       ├── main/java                       # Custom Java code
+│       ├── main/resources                  # Config/resources
+│       └── test/java                       # Unit tests
+├── maven-sdk-tutorial-share-docker         # Docker image definition for Share
+│   ├── pom.xml
+│   └── src/main/docker
+├── pom.xml                                 # Parent POM managing all modules
+├── README.md                               # Documentation and instructions
+├── run.bat                                 # Windows startup script
+└── run.sh                                  # Linux/Mac startup script
+```
+
 The SDK defaults to a fairly recent Alfresco version. If you need to run on a
-different version, you might want to edit maven-sdk-tutorial/pom.xml and change
+different version, you might want to edit `maven-sdk-tutorial/pom.xml` and change
 it before you proceed.
 
 Let's Run It
